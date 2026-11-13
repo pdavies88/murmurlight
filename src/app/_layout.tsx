@@ -69,6 +69,15 @@ export default function RootLayout() {
               headerRight: () => <HeaderDoneButton />,
             }}
           />
+          <Stack.Screen
+            name="wind-down"
+            options={{
+              title: "",
+              headerTransparent: true,
+              presentation: "modal",
+              headerRight: () => <HeaderDoneButton />,
+            }}
+          />
         </Stack>
         <SplashOverlay />
       </PlaybackProvider>

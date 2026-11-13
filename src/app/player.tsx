@@ -27,7 +27,7 @@ const MAX_ORB_SHARE = 0.3;
 /** In two columns the orb shares its column only with the titles, so it can take a little more of the height. */
 const MAX_WIDE_ORB_SHARE = 0.35;
 
-/** Full-screen player for guided meditations. Soundscapes are started and stopped from their tiles. */
+/** Full-screen player for guided meditations. Sounds are mixed on the Sounds tab. */
 export default function PlayerScreen() {
   const theme = useTheme();
   const { track, isPlaying, position, duration, finished, toggle, stop, seekBy } = usePlayback();
@@ -40,11 +40,11 @@ export default function PlayerScreen() {
 
   // Closing the player (the close button, a swipe down or Android back) ends the meditation.
   const endMeditation = useEffectEvent(() => {
-    if (track?.kind === 'meditation') stop();
+    if (track) stop();
   });
   useEffect(() => () => endMeditation(), []);
 
-  if (track?.kind !== 'meditation') {
+  if (!track) {
     return (
       <ThemedView style={[styles.container, styles.center]}>
         <ThemedText themeColor="textSecondary">Nothing is playing.</ThemedText>

@@ -41,6 +41,7 @@ export default function MeditateScreen() {
             styles.content,
             { paddingLeft: Spacing.four + insets.left, paddingRight: Spacing.four + insets.right },
           ]}>
+          <WindDownCard />
           {CATEGORIES.map((category) => (
             <View key={category.id} style={styles.category}>
               <View style={styles.categoryHeader}>
@@ -64,13 +65,40 @@ export default function MeditateScreen() {
   );
 }
 
+/** The way into the wind-down routine, at the top of the list so it's the first thing people try. */
+function WindDownCard() {
+  const theme = useTheme();
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Wind down. Breathe, meditate, then fall asleep to your mix."
+      accessibilityHint="Opens the wind-down routine"
+      onPress={() => router.push('/wind-down')}>
+      {({ pressed }) => (
+        <View
+          style={[styles.windDown, { backgroundColor: theme.tint, transform: [{ scale: pressed ? 0.98 : 1 }] }]}>
+          <View style={styles.rowText}>
+            <ThemedText style={[styles.windDownTitle, { color: theme.onTint }]}>Wind down</ThemedText>
+            <ThemedText type="small" style={{ color: theme.onTint, opacity: 0.85 }}>
+              Breathe, meditate, then fall asleep to your mix. One tap, and you can lock your phone.
+            </ThemedText>
+          </View>
+          <View style={[styles.play, { backgroundColor: theme.onTint }]}>
+            <PlayPauseIcon playing={false} color={theme.tint} size={16} />
+          </View>
+        </View>
+      )}
+    </Pressable>
+  );
+}
+
 function SessionRow({ meditation }: { meditation: Meditation }) {
   const theme = useTheme();
-  const { track, isPlaying, play } = usePlayback();
-  const isCurrent = track?.kind === 'meditation' && track.id === meditation.id;
+  const { track, isPlaying, playMeditation } = usePlayback();
+  const isCurrent = track?.id === meditation.id;
 
   const open = () => {
-    if (!isCurrent) play('meditation', meditation.id);
+    if (!isCurrent) playMeditation(meditation.id);
     router.push('/player');
   };
 
@@ -141,6 +169,20 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     padding: Spacing.three - Spacing.one,
     borderRadius: 20,
+  },
+  windDown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: 24,
+  },
+  windDownTitle: {
+    fontSize: 20,
+    lineHeight: 26,
+    fontFamily: DisplayFont.extraBold,
+    fontWeight: 'normal',
+    letterSpacing: -0.4,
   },
   minutes: {
     width: 52,

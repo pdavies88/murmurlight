@@ -1,4 +1,4 @@
-# Guided meditation scripts for Relaxation Station.
+# Guided meditation scripts for Lullmix.
 #
 # Format:
 #   ## <meditation id> <bed>  starts a meditation. Ids match content/catalog.json. The bed is the

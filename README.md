@@ -1,9 +1,12 @@
-# Relaxation Station
+# Lullmix
 
-Free guided meditations and soothing soundscapes. Everything is built into the app, so it works fully offline, even in airplane mode.
+A free sleep sound mixer with guided breathing and meditation. Everything is built into the app, so it works fully offline, even in airplane mode.
 
-- **15 guided meditations** in five categories: Sleep, Stress Relief, Breathing, Body Scan and Focus. Each category has a 3, 5 and 10 minute session.
-- **12 soundscapes:** Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride and Gentle Shush. Each plays on a seamless loop until you stop it, like a sound machine.
+- **Sound mixer:** layer up to 4 of 12 sounds with a volume for each, saved on the phone. Four ready-made mixes, and Drift, which slowly moves each volume so the mix never sounds like a loop.
+- **Sleep timer:** 15 to 60 minutes with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
+- **Breathe:** a breathing pacer with three patterns and haptic taps.
+- **Wind down:** two minutes of breathing, a sleep meditation, then the mix with the sleep timer. The mix starts by itself when the meditation ends.
+- **15 guided meditations** in five categories: Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute sessions.
 - **Keeps playing with the screen locked,** with lock screen and notification controls.
 - **No network, no accounts, no data collection.**
 
@@ -65,15 +68,16 @@ content/                  Catalog and meditation scripts (source of truth for th
 audio-tools/              Audio generator (Python, run on a Mac only)
 assets/audio/             Generated meditations and soundscapes (AAC)
 src/
-  app/                    Expo Router routes: (tabs)/ Meditate, Sounds, About; player.tsx modal
+  app/                    Expo Router routes: (tabs)/ Meditate, Sounds, Breathe, About; player.tsx and wind-down.tsx modals
   components/             Play/pause icon, sound icons, button; brand/ logo, hero, splash
   content/                Typed catalog and the generated audio map
-  context/                Playback: one shared player, background audio, lock screen controls
-  lib/                    Small pure helpers with tests
+  context/                Playback: meditation player, sound mixer, sleep timer, background audio
+  widgets/                The sleep timer Live Activity (expo-widgets)
+  lib/                    Mix, breathing and timer logic with tests, and the mixer's audio engine
 patches/                  Fixes to dependencies, applied by `npm install`
 ```
 
-`patches/react-native-screens+4.30.0.patch` makes the tab bar appear when the app launches on an unfolded iPhone Duo. It is the fix from [react-native-screens#4990](https://github.com/software-mansion/react-native-screens/pull/4990). `npm install` applies it through `postinstall`. Delete the patch after upgrading to a react-native-screens release that includes the fix.
+`patches/react-native-screens+4.30.1.patch` makes the tab bar appear when the app launches on an unfolded iPhone Duo. It is the fix from [react-native-screens#4990](https://github.com/software-mansion/react-native-screens/pull/4990). `npm install` applies it through `postinstall`. Delete the patch after upgrading to a react-native-screens release that includes the fix.
 
 ## Releasing
 

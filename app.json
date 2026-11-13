@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Relaxation Station",
+    "name": "Lullmix",
     "slug": "relaxation-station",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "relaxationstation",
@@ -95,7 +95,11 @@
         }
       ],
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser",
+      "expo-widgets"
     ],
     "experiments": {
       "typedRoutes": true,

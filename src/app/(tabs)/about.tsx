@@ -13,7 +13,11 @@ import { useTheme } from '@/hooks/use-theme';
 const FACTS = [
   {
     title: 'Everything is free',
-    body: '15 guided meditations and 12 soundscapes. No accounts, no subscriptions and no ads.',
+    body: 'The sound mixer, the sleep timer, the breathing pacer and 15 guided meditations. No accounts, no subscriptions and no ads.',
+  },
+  {
+    title: 'Build your own mix',
+    body: 'Layer up to 4 of the 12 sounds and set the volume of each. Your mix is saved on this phone, and a sleep timer can fade it out.',
   },
   {
     title: 'Works completely offline',
@@ -25,7 +29,7 @@ const FACTS = [
   },
   {
     title: 'Your privacy',
-    body: 'The app collects no data. Nothing you do in the app leaves your phone.',
+    body: 'The app collects no data. Your saved mix stays on this phone, and nothing you do in the app leaves it.',
   },
   {
     title: 'A gentle note',

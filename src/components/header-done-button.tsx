@@ -10,7 +10,7 @@ export function HeaderDoneButton() {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Close player"
+      accessibilityLabel="Close"
       hitSlop={10}
       onPress={() => router.back()}
       style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}>

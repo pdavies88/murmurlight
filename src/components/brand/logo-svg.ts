@@ -1,5 +1,5 @@
 /**
- * The Relaxation Station mark: a softly glowing orb inside two quiet ripples, like one slow breath,
+ * The Lullmix mark: a softly glowing orb inside two quiet ripples, like one slow breath,
  * on a deep violet gradient.
  *
  * This file is the single source for the logo. The app renders it with `SvgXml`, and

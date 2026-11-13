@@ -1,11 +1,11 @@
 # App Store release kit
 
-Everything App Store Connect asks for, ready to paste. Fill these in on the **website** (appstoreconnect.apple.com → Apps → Relaxation Station). The App Store Connect iPhone app can't edit versions.
+Everything App Store Connect asks for, ready to paste. Fill these in on the **website** (appstoreconnect.apple.com → Apps → Lullmix). The App Store Connect iPhone app can't edit versions.
 
 ## Go-live checklist
 
 - [ ] Repo is public and GitHub Pages serves `docs/`, so the URLs below open.
-- [ ] A TestFlight build plays a meditation and a soundscape with the screen locked on a real iPhone.
+- [ ] A TestFlight build plays a mix with the sleep timer, a meditation and the wind-down routine with the screen locked on a real iPhone. The sleep timer shows as a Live Activity.
 - [ ] Version page: build selected, iPhone and iPhone Duo screenshots, promotional text, What's New, description, keywords, support URL, copyright.
 - [ ] App Information: categories, content rights, age rating.
 - [ ] App Privacy: "Data Not Collected", then **Publish**.
@@ -16,13 +16,19 @@ Everything App Store Connect asks for, ready to paste. Fill these in on the **we
 
 ## Build and upload
 
+The Expo account is out of EAS cloud build credits, so build on this Mac and submit the result. A local build uses no credits.
+
 ```bash
-npx eas-cli@latest build --platform ios --profile production --auto-submit
+npx eas-cli@latest build --platform ios --profile production --local --output ./build/Lullmix.ipa
 ```
 
-Version 1.2.0 is the Expo SDK 58 build. `eas.json` pins the production iOS build to the `sdk-58` image, which uses Xcode 27.1 and the iOS 27.1 SDK. Apple treats only builds from Xcode 27.1 or later as iPhone Duo-optimized. Check the **Spin up build environment** step in the EAS log to confirm the Xcode version.
+```bash
+npx eas-cli@latest submit --platform ios --profile production --path ./build/Lullmix.ipa
+```
 
-On the first run, EAS asks which Expo account owns the project. You're signed in to two, `preston5` and `prestonbuilds`. Whatcha Eatin' uses `preston5`, so pick that one unless you want this app under the other account. EAS then asks to sign in to Apple and creates the signing certificate, provisioning profile and App Store Connect record. Commit the `extra.eas.projectId` it adds to `app.json`.
+Version 2.0 adds a widget extension for the sleep timer Live Activity (`com.pdavies.relaxationstation.ExpoWidgetsTarget`) and an app group (`group.com.pdavies.relaxationstation`). The first build after that change must create a provisioning profile for the extension, so run it **without** `--non-interactive` and sign in to Apple when EAS asks. Later builds can add `--non-interactive`.
+
+The local build uses the Xcode on this Mac, which must be 27.1 or later for the build to count as iPhone Duo-optimized. `eas.json` keeps the `sdk-58` image pinned for cloud builds.
 
 ## URLs
 
@@ -38,58 +44,62 @@ The app links to the privacy policy and support page from its **About** tab, as 
 
 | Field | Value | Limit |
 | --- | --- | --- |
-| Name | Relaxation Station: Sleep (see the note below) | 30 |
-| Subtitle | Meditation & Sounds | 30 |
+| Name | Lullmix (see the note below) | 30 |
+| Subtitle | Sleep Sound Mixer & Breathing | 30 |
 | Primary category | Health & Fitness | |
 | Secondary category | Lifestyle | |
 | Content rights | No, it does not contain, show or access third-party content | |
 | Copyright | 2026 Preston Davies | |
 | Price | Free | |
 
-**App name note:** another developer holds "Relaxation Station" and "The Relaxation Station" on the App Store, so App Store Connect refuses both. EAS first created the record as "Relaxation Station (1d8aeb)". On November 2, 2026 it was renamed to "Relaxation Station: Sleep" in **App Information → Name**. The new name goes live with the next approved version. The home screen name comes from `app.json` and stays "Relaxation Station".
+**App name note:** version 1.2.1 was rejected on November 13, 2026 under guideline 4.3(a), spam: Apple saw it as too similar to other meditation and sound apps. Version 2.0 answers that with new features and a new name. Another developer holds "Relaxation Station", so the store name was "Relaxation Station: Sleep". For 2.0, change **App Information → Name** to `Lullmix`. No live app used that name on November 13, 2026. The home screen name comes from `app.json` and is also "Lullmix".
 
 ### Promotional text (170 characters)
 
 ```
-Now optimized for iPhone Duo. 15 free guided meditations and 12 soothing soundscapes. No account, no subscription, and it works completely offline.
+Build your own sleep sound mix, breathe with a guided pacer and drift off with a sleep timer. Free forever: no subscription, no account, no ads, and it works offline.
 ```
 
-### What's New in 1.2.1 (4,000 characters)
+### What's New in 2.0 (4,000 characters)
 
 ```
-Relaxation Station is now optimized for iPhone Duo. Use it folded or unfolded, upright or sideways, and it fills the screen you are using.
+Relaxation Station is now Lullmix, with new ways to wind down. Everything is still free.
 
-You can now turn any iPhone sideways, too. In landscape the player shows its controls beside the breathing orb, and meditations and sounds keep playing as the screen rotates.
-
-Also updated for iOS 27.
+- Sound mixer: layer up to 4 sounds and set the volume of each. Your mix is saved on your phone.
+- Ready-made mixes: Rainy cabin, Night shore, Deep focus and Nap time.
+- Drift: each sound slowly rises and falls, so your mix never sounds like a loop.
+- Sleep timer: 15 to 60 minutes, with a one-minute fade-out. It counts down on your Lock Screen and in the Dynamic Island.
+- Breathe: a pacer that grows and shrinks with your breath, with a tap at each change so you can close your eyes.
+- Wind down: one tap runs two minutes of breathing, a sleep meditation, then your mix with the sleep timer.
+- Optimized for iPhone Duo, and every iPhone now turns sideways.
 ```
 
 ### Description (4,000 characters)
 
 ```
-Relaxation Station helps you slow down, breathe and fall asleep. Everything is free, and everything works offline.
+Lullmix is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
 
-GUIDED MEDITATIONS
-15 calm, gently paced sessions in five categories:
-- Sleep: wind down and let the day go
-- Stress Relief: loosen the grip of a busy mind
-- Breathing: steady your breath with box breathing and longer exhales
-- Body Scan: release tension from head to toe
-- Focus: clear the noise before you begin something important
-Each category has a 3, 5 and 10 minute session, so there's always one that fits.
+YOUR OWN SOUND MIX
+Layer up to 4 of 12 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride and Gentle Shush. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Lullmix saves your mix, so it's one tap away tomorrow night. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus or Nap time.
 
-SOOTHING SOUNDSCAPES
-12 sounds that play on a seamless loop until you stop them, like a sound machine on your nightstand:
-Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride and Gentle Shush. Car Ride and Gentle Shush are made to help little ones nap.
+A SLEEP TIMER THAT FADES OUT
+Choose 15, 30, 45 or 60 minutes. Your mix fades out over the last minute instead of stopping with a jolt. The countdown shows on your Lock Screen and in the Dynamic Island.
 
-PLAYS WITH YOUR SCREEN LOCKED
-Start a sound, lock your phone and drift off. Pause or stop from the lock screen whenever you like.
+WIND DOWN IN ONE TAP
+Two minutes of slow breathing, a guided sleep meditation, then your mix with the sleep timer. Lock your phone after the first step and let the rest play.
 
-PRIVATE AND OFFLINE
-- No account or sign-up
-- No ads, tracking or analytics
-- No internet needed: every meditation and sound is built into the app
-- Nothing you do in the app leaves your phone
+BREATHE
+Follow an orb that grows as you breathe in and shrinks as you breathe out. Choose Box (4-4-4-4), Long exhale (4-7-8) or Even (5-5). A gentle tap marks each change, so it works with your eyes closed.
+
+15 GUIDED MEDITATIONS
+Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute sessions. Every script was written and voiced for Lullmix.
+
+FREE AND PRIVATE
+- Every feature is free. There is nothing to unlock.
+- No account, ads, tracking or analytics
+- Works offline, even in airplane mode
+- Keeps playing with your screen locked
+- Optimized for iPhone Duo, and works upright or sideways
 
 The meditations are for relaxation and general wellbeing. They are not medical advice or treatment.
 ```
@@ -97,7 +107,7 @@ The meditations are for relaxation and general wellbeing. They are not medical a
 ### Keywords (100 characters, comma-separated, no spaces after commas)
 
 ```
-meditation,sleep sounds,rain,brown noise,relax,calm,breathing,mindfulness,stress,sound machine,nap
+sleep sounds,sound mixer,white noise,brown noise,rain,breathing,sleep timer,meditation,nap,offline
 ```
 
 ## App Privacy questionnaire
@@ -133,54 +143,64 @@ Result, saved November 2, 2026: 9+ in 172 countries and regions, 12+ in Vietnam,
 
 ### Notes
 
-These notes answer Apple's six "Guideline 2.1 - Information Needed" questions for new developer accounts up front, so App Review doesn't have to ask. Before you submit, record the screen recording below and attach it in **App Review Information → Attachment**. Then paste this text into the **Notes** field. If Apple still asks for information, paste the same text as your reply and attach the recording again. The text is about 3,000 characters, under the 4,000 limit.
+Version 2.0 replies to the guideline 4.3(a) rejection of 1.2.1. Record the screen recording below and attach it in **App Review Information → Attachment**, then paste this text into the **Notes** field. Paste the first section as your reply to the rejection in App Store Connect too.
 
 ```
-WHAT'S NEW IN 1.2.1
-- Optimized for iPhone Duo. The layout adapts to the inner and outer displays, folded or unfolded. On the unfolded display the tab bar runs down the right edge and the player opens as a sheet.
-- The app now rotates on every iPhone. In landscape the player shows the controls beside the breathing orb, so every control stays on screen.
-- Built with the iOS 27.1 SDK.
+RESPONSE TO THE 4.3(a) REJECTION OF 1.2.1
+Thank you for the review. We agreed that 1.2.1 looked like other meditation and sound apps, so 2.0 adds features built for this app and a new, unique name (Lullmix, formerly Relaxation Station):
+- Sound mixer: layer up to 4 of 12 sounds with a volume for each, saved on the device. Four ready-made mixes.
+- Drift: each sound's volume slowly rises and falls on its own wave, so the mix never repeats like a loop.
+- Sleep timer with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
+- Breathe tab: a breathing pacer with three patterns and haptic taps at each change, usable with eyes closed.
+- Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
+- Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
+
+This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 12 sounds were synthesized for it. The developer has no other meditation or sound apps.
 
 1. SCREEN RECORDING
-Attached: a recording on a physical iPhone running the latest iOS, starting from launch. It shows playing a meditation, locking the screen while audio continues, the lock screen controls, starting and stopping a soundscape, and the About tab. The app has no account registration or login, no user-generated content, and no paid content or in-app purchases.
+Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the Breathe tab, the wind-down routine with the screen locked, and the About tab. The app has no login, user-generated content or in-app purchases.
 
 2. PURPOSE AND AUDIENCE
-Relaxation Station is a free meditation and sleep sounds app for anyone who wants to relax, manage everyday stress or fall asleep. It offers 15 guided meditations written and narrated for this app (Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute versions) and 12 looping soundscapes made for it, such as rain and ocean waves. Most apps in this category require an account, a subscription or an internet connection. This one is completely free, has no ads or tracking, and plays everything offline.
+Lullmix is for anyone who wants to fall asleep, nap or relax. Its core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
 
 3. SETUP AND TEST INSTRUCTIONS
-No login, keys or setup are needed. All audio is bundled in the app.
-a. Launch the app. On the Meditate tab, tap any session, for example "Settle In" (3 min). The player opens and the meditation plays.
-b. Lock the iPhone. The meditation keeps playing and shows Now Playing controls on the lock screen.
-c. Unlock and tap "End session", or close the player with the X. Closing the player stops the meditation.
-d. Open the Sounds tab and tap "Ocean Waves". It loops until stopped. Tap the tile again, or use the lock screen controls, to stop it.
-e. The About tab links to the privacy policy and support page.
+No login or setup is needed. All audio is bundled.
+a. Sounds tab: tap Gentle Rain, then Crackling Fire. Both play together. Drag each volume bar. Turn on Drift.
+b. Choose a 15 minute sleep timer, then lock the iPhone: the countdown shows on the Lock Screen and in the Dynamic Island, and the mix keeps playing.
+c. Tap a ready-made mix, such as Rainy cabin, to replace the mix.
+d. Breathe tab: choose Box and tap Start breathing. The orb grows and shrinks, with a haptic tap at each change.
+e. Meditate tab: tap Wind down, then Start wind-down. Tap Skip to the meditation and Skip to the mix to see all three steps quickly.
+f. Meditate tab: tap any meditation, for example Settle In, to open the player.
+g. About tab: links to the privacy policy and support page.
 
 BACKGROUND AUDIO
-The app uses the "audio" background mode so meditations and sleep soundscapes keep playing with the screen locked. This is the app's core purpose: users fall asleep to a soundscape.
+The "audio" background mode keeps the mix and meditations playing with the screen locked. That is the app's core purpose: users fall asleep to their mix.
 
 4. EXTERNAL SERVICES
-None. The app has no backend, network requests, authentication, payments, analytics, advertising or AI services. All meditations and sounds are bundled audio files.
+None. No backend, network requests, accounts, payments, analytics, ads or AI services.
 
 5. REGIONAL DIFFERENCES
-None. The app works the same in all regions.
+None.
 
 6. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
-The app is not a medical device and makes no medical claims. It provides general relaxation content and states in the app that it is not medical advice or treatment.
-All content was created for this app. The meditation scripts were written for it, and the narration was generated with the open-source Qwen3-TTS text-to-speech model (Apache 2.0 license, which permits commercial use). All music and soundscapes were synthesized for the app. "Music Box Lullaby" is a new recording of Brahms' Lullaby (1868), which is in the public domain. No third-party copyrighted material is used.
+Not a medical device and no medical claims. The app states that it is not medical advice or treatment.
+All content was made for this app. The narration was generated with the open-source Qwen3-TTS model (Apache 2.0, which permits commercial use). "Music Box Lullaby" is a new recording of Brahms' Lullaby (1868), which is in the public domain.
 ```
 
 ### Screen recording to attach
 
-Record on a physical iPhone running the latest iOS, in about 2 minutes. Install the submitted build from TestFlight first.
+Record on a physical iPhone running the latest iOS, in about 3 minutes. Install the submitted build from TestFlight first.
 
 1. Add **Screen Recording** to Control Center (Settings → Control Center) if it isn't there. Start a recording from Control Center.
-2. On the Home Screen, tap the app icon.
-3. Meditate tab: scroll the categories, then tap **Settle In**.
-4. Lock the phone, then wake it to show the lock screen controls with audio still playing. Unlock.
-5. Turn the phone sideways to show the player in landscape, then turn it back.
-6. Tap **End session**, open **Sounds** and tap **Ocean Waves**. Lock the phone again to show it keeps playing, then stop it from the lock screen.
-7. Open **About** and tap **Privacy policy**.
-8. Stop the recording. It's saved to Photos. AirDrop it to your Mac and attach it in App Store Connect. If the file is too large, export a 1080p copy with QuickTime (File → Export As).
+2. On the Home Screen, tap the Lullmix icon.
+3. **Sounds** tab: tap Gentle Rain and Crackling Fire, drag both volume bars, and turn on Drift. Choose a 15 minute sleep timer.
+4. Lock the phone and wake it to show the Live Activity counting down. Unlock.
+5. Tap the **Rainy cabin** ready-made mix.
+6. **Breathe** tab: tap **Start breathing** and follow two breaths. Tap **Stop**.
+7. **Meditate** tab: tap **Wind down**, then **Start wind-down**. After a few breaths, tap **Skip to the meditation**, lock the phone, unlock it, then tap **Skip to the mix**. Tap **Done**.
+8. Turn the phone sideways on the Sounds tab, then turn it back.
+9. **About** tab: tap **Privacy policy**.
+10. Stop the recording. It's saved to Photos. AirDrop it to your Mac and attach it in App Store Connect. If the file is too large, export a 1080p copy with QuickTime (File → Export As).
 
 ## Screenshots
 
@@ -223,7 +243,7 @@ What the app does on iPhone Duo:
 
 - **Inner display:** the app fills the screen. Content stays centered with a maximum width of 800 points, and the tabs run down the right edge.
 - **Landscape:** the hero shrinks, and the player puts its controls beside the orb, so nothing needs a scroll. Checked on the iPhone 18 Pro Max simulator. The Duo's outer display in landscape uses the same layout but hasn't been checked on the simulator yet.
-- **Cold launch while unfolded:** `patches/react-native-screens+4.30.0.patch` makes the tab bar appear. Without it, the tab bar is missing until the device folds or rotates. See the main README.
+- **Cold launch while unfolded:** `patches/react-native-screens+4.30.1.patch` makes the tab bar appear. Without it, the tab bar is missing until the device folds or rotates. See the main README.
 - **Not yet tested:** the outer display in landscape, and folding while a meditation plays.
 
 ## After approval

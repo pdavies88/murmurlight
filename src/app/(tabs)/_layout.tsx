@@ -20,7 +20,12 @@ export default function TabLayout() {
 
       <NativeTabs.Trigger name="sounds">
         <NativeTabs.Trigger.Label>Sounds</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'cloud.rain', selected: 'cloud.rain.fill' }} md="water_drop" />
+        <NativeTabs.Trigger.Icon sf="slider.horizontal.3" md="tune" />
+      </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="breathe">
+        <NativeTabs.Trigger.Label>Breathe</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="wind" md="air" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="about">
