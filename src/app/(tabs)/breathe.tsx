@@ -15,7 +15,7 @@ import { BREATH_PATTERNS } from '@/lib/breathing';
 const ORB_SIZE = 240;
 /** The orb never takes more than this share of the screen's height, so the controls fit. */
 const MAX_ORB_SHARE = 0.32;
-const MAX_WIDE_ORB_SHARE = 0.55;
+const MAX_WIDE_ORB_SHARE = 0.4;
 
 /** A breathing pacer: an orb that grows and shrinks to a chosen pattern, with a countdown and haptics. */
 export default function BreatheScreen() {
@@ -65,7 +65,7 @@ export default function BreatheScreen() {
           </View>
 
           <View style={[styles.column, wide && styles.columnWide]}>
-            {wide ? <Header /> : null}
+            {wide ? <Header compact /> : null}
             <View style={styles.patterns} accessibilityRole="radiogroup">
               {BREATH_PATTERNS.map((entry) => {
                 const selected = entry.id === pattern.id;
@@ -84,10 +84,19 @@ export default function BreatheScreen() {
                         opacity: running && !selected ? 0.45 : 1,
                       },
                     ]}>
-                    <ThemedText style={[styles.patternTitle, { color: selected ? theme.onTint : theme.text }]}>
+                    <ThemedText
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.75}
+                      style={[styles.patternTitle, { color: selected ? theme.onTint : theme.text }]}>
                       {entry.title}
                     </ThemedText>
-                    <ThemedText type="small" style={{ color: selected ? theme.onTint : theme.textSecondary }}>
+                    <ThemedText
+                      type="small"
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.75}
+                      style={{ color: selected ? theme.onTint : theme.textSecondary }}>
                       {entry.summary}
                     </ThemedText>
                   </Pressable>
@@ -105,16 +114,19 @@ export default function BreatheScreen() {
   );
 }
 
-function Header() {
+/** In landscape there's no room for the instructions beside the orb, so only the title shows. */
+function Header({ compact = false }: { compact?: boolean }) {
   return (
     <View style={styles.header}>
       <ThemedText type="subtitle" accessibilityRole="header">
         Breathe
       </ThemedText>
-      <ThemedText themeColor="textSecondary">
-        Follow the orb. It grows as you breathe in and shrinks as you breathe out. A tap marks each change, so you can
-        close your eyes.
-      </ThemedText>
+      {compact ? null : (
+        <ThemedText themeColor="textSecondary">
+          Follow the orb. It grows as you breathe in and shrinks as you breathe out. A tap marks each change, so you
+          can close your eyes.
+        </ThemedText>
+      )}
     </View>
   );
 }

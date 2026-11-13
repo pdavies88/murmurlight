@@ -259,8 +259,7 @@ function SoundTile({ soundscape }: { soundscape: Soundscape }) {
           value={sound.volume}
           onChange={(volume) => setSoundVolume(soundscape.id, volume)}
           accessibilityLabel={`${soundscape.title} volume`}
-          trackColor={theme.onTintMuted}
-          fillColor={theme.onTint}
+          color={theme.onTint}
         />
       ) : null}
     </View>

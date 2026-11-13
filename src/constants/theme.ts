@@ -15,8 +15,6 @@ export const Colors = {
     textSecondary: '#5F5B76',
     tint: '#4B3FB5',
     onTint: '#FFFFFF',
-    /** An unfilled track on a tinted surface, such as a volume bar on an active sound tile. */
-    onTintMuted: 'rgba(255, 255, 255, 0.35)',
     danger: '#B42318',
     border: '#E5E1F4',
     heroBackground: '#EEEBFA',
@@ -33,7 +31,6 @@ export const Colors = {
     textSecondary: '#A9A6C4',
     tint: '#A99CFF',
     onTint: '#14112E',
-    onTintMuted: 'rgba(20, 17, 46, 0.3)',
     danger: '#FDA29B',
     border: '#22223F',
     heroBackground: '#0F0E22',
