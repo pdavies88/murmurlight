@@ -6,7 +6,8 @@ Everything App Store Connect asks for, ready to paste. Fill these in on the **we
 
 - [ ] Repo is public and GitHub Pages serves `docs/`, so the URLs below open.
 - [ ] A TestFlight build plays a mix with the sleep timer, a meditation and the wind-down routine with the screen locked on a real iPhone. The sleep timer shows as a Live Activity.
-- [ ] Version page: build selected, iPhone and iPhone Duo screenshots, promotional text, What's New, description, keywords, support URL, copyright.
+- [ ] Version page: build selected, old screenshots deleted and the 2.0 set uploaded, promotional text, What's New, description, keywords, support URL, copyright.
+- [ ] App Information: name `Lullmix` and subtitle `Sleep Sound Mixer & Breathing`.
 - [ ] App Information: categories, content rights, age rating.
 - [ ] App Privacy: "Data Not Collected", then **Publish**.
 - [ ] Regulated medical device: **No**.
@@ -204,36 +205,35 @@ Record on a physical iPhone running the latest iOS, in about 3 minutes. Install 
 
 ## Screenshots
 
-All screenshots come from a Release build of version 1.2.0 with a clean 9:41 status bar, captured on October 26, 2026. A Release build shows no developer banner. Upload each set in this order:
+All screenshots come from a Release build of version 2.0.0 on the iPhone 18 Pro Max simulator with a clean 9:41 status bar, captured on November 13, 2026. They lead with the sound mixer, because it is what makes 2.0 different. Upload them in this order:
 
-1. `01-meditate.png`: hero, logo and the Sleep sessions
-2. `02-player.png`: a 10-minute meditation playing
-3. `03-sounds.png`: the soundscape grid with Ocean Waves playing
-4. `04-player-dark.png`: dark mode meditation player
-5. `05-meditate-dark.png`: dark mode hero
+1. `01-sound-mixer.png`: the Rainy cabin mix playing, with a 30 minute sleep timer and Drift on
+2. `02-sleep-timer.png`: the sleep timer Live Activity on the Lock Screen
+3. `03-wind-down.png`: the three-step Wind down routine
+4. `04-breathe.png`: the breathing pacer mid-breath
+5. `05-meditate.png`: the Meditate tab with the Wind down card and sleep meditations
+6. `06-sounds-dark.png`: the mixer in dark mode
 
 | Folder | Size | App Store Connect slot |
 | --- | --- | --- |
-| `screenshots/` | 1320 × 2868 | 6.9" display, from the iPhone 18 Pro Max simulator |
+| `screenshots/` | 1320 × 2868 | 6.9" display |
 | `screenshots/6.3-inch/` | 1206 × 2622 | 6.1" / 6.3" display, resized from the 6.9" set |
-| `screenshots/iphone-duo/` | 2853 × 2007 | iPhone Duo, the unfolded inner display in landscape |
+
+**Delete the old screenshots in App Store Connect** before uploading, including the old iPhone Duo set. They show version 1.2.1, and screenshots must match the app (guideline 2.3.3).
 
 ### iPhone Duo screenshots
 
-Uploading the `iphone-duo/` set adds a badge to the product page saying the app is optimized for iPhone Duo. From April 2027, every submission must include iPhone Duo screenshots. Check the 2853 × 2007 size against App Store Connect's iPhone Duo specifications before you upload.
-
-Unfolded, the tabs run down the right edge, and the player opens as a sheet beside the Meditate list. The Sounds grid shows three columns.
+There is no iPhone Duo set for 2.0 yet. Apple requires one from April 2027, and it adds the "optimized for iPhone Duo" badge. To make one, unfold the iPhone Duo simulator in Device Hub, run the Release build on it, and capture the same screens at 2853 × 2007.
 
 ### Retaking screenshots
 
-1. Build a Release version: `npx expo run:ios --configuration Release --device <UDID>`. Install the same `.app` on the other simulator with `xcrun simctl install <UDID> <path to RelaxationStation.app>`.
-2. Unfold the iPhone Duo simulator in Device Hub before you launch the app.
-3. Set the status bar with `xcrun simctl status_bar <UDID> override --time 9:41 --batteryState discharging --batteryLevel 100`.
-4. Switch themes with `xcrun simctl ui <UDID> appearance dark` or `light`.
-5. Save each screen with `xcrun simctl io <UDID> screenshot <file>.png`. Write outside the project if Metro is running, because new files in the project reload a debug app.
-6. Make the 6.3" copies with `for f in 0*.png; do sips -z 2622 1206 "$f" --out "6.3-inch/$f"; done` from `store/screenshots/`.
+1. Build a Release version: `npx expo run:ios --configuration Release --device <UDID>`.
+2. Set the status bar with `xcrun simctl status_bar <UDID> override --time 9:41 --batteryState discharging --batteryLevel 100`.
+3. Switch themes with `xcrun simctl ui <UDID> appearance dark` or `light`.
+4. Save each screen with `xcrun simctl io <UDID> screenshot <file>.png`.
+5. Make the 6.3" copies with `for f in 0*.png; do sips -z 2622 1206 "$f" --out "6.3-inch/$f"; done` from `store/screenshots/`.
 
-For the player shots, tap the forward button eight times so the progress bar reads about 2:15.
+The simulator ignores very short taps on switches. Slide the Drift switch instead of tapping it.
 
 ## iPhone Duo
 
