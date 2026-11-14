@@ -4,6 +4,7 @@
     .tts/venv/bin/python audio-tools/generate_audio.py sounds     # soundscapes only
     .tts/venv/bin/python audio-tools/generate_audio.py meditations [id ...]
     .tts/venv/bin/python audio-tools/generate_audio.py sounds [id ...]
+    .tts/venv/bin/python audio-tools/generate_audio.py cues       # breathing pacer tones
     .tts/venv/bin/python audio-tools/generate_audio.py voice      # redesign the narrator's reference clip
 
 Soundscapes are synthesized from filtered noise and tones, and made to loop seamlessly.
@@ -658,6 +659,142 @@ def sound_shush(rng, n):
     return np.stack([mono, mono], axis=1)
 
 
+def whole_cycles(freq: float, n: int) -> float:
+    """Rounds a frequency to a whole number of cycles per file, so the end joins the start cleanly."""
+    length = n / SR
+    return round(freq * length) / length
+
+
+def binaural(rng, n, carrier: float, beat: float) -> np.ndarray:
+    """A binaural beat: one tone in the left ear and a slightly higher one in the right. Heard on
+    headphones, the difference is a slow pulse at the beat frequency. A soft pink-noise bed and a
+    slow swell keep it from sounding like a test tone."""
+    t = np.arange(n) / SR
+    low = whole_cycles(carrier, n)
+    high = whole_cycles(carrier + beat, n)
+    swell = 0.8 + 0.2 * loop_curve(n, [(3, 1.0), (7, 0.5)])
+    left = np.sin(2 * np.pi * low * t) + 0.15 * np.sin(2 * np.pi * 2 * low * t)
+    right = np.sin(2 * np.pi * high * t) + 0.15 * np.sin(2 * np.pi * 2 * high * t)
+    bed = circular_filter(pink(rng, n), lambda x: lowpass(x, 600))
+    bed = 0.18 * bed / (np.sqrt(np.mean(bed ** 2)) + 1e-9) * np.sqrt(0.5)
+    return np.stack([left * swell + bed, right * swell + bed], axis=1)
+
+
+def sound_delta(rng, n):
+    return binaural(rng, n, 100.0, 2.0)
+
+
+def sound_theta(rng, n):
+    return binaural(rng, n, 180.0, 6.0)
+
+
+def sound_alpha(rng, n):
+    return binaural(rng, n, 220.0, 10.0)
+
+
+def sound_om(rng, n):
+    """A low, breathing drone on one note, like a long chanted om."""
+    t = np.arange(n) / SR
+    base = whole_cycles(136.1, n)
+    breath = 0.35 + 0.65 * loop_curve(n, [(12, 1.0), (5, 0.3)])
+    sides = []
+    for detune in (-0.15, 0.15):
+        f = whole_cycles(base + detune, n)
+        tone = np.zeros(n)
+        for harmonic, amp in ((1, 1.0), (2, 0.55), (3, 0.3), (4, 0.18), (5, 0.08)):
+            tone += amp * np.sin(2 * np.pi * f * harmonic * t)
+        sides.append(circular_filter(tone * breath, lambda x: lowpass(x, 1200)))
+    return np.stack(sides, axis=1)
+
+
+BOWL_NOTES = [130.81, 146.83, 174.61, 196.0, 220.0]  # C, D, F, G, A
+
+
+def sound_bowls(rng, n):
+    """Singing bowls struck one at a time, each left to ring out, with a long soft reverb."""
+    left = np.zeros(n)
+    right = np.zeros(n)
+    t = 0.0
+    while t < n / SR:
+        strike = bell(16.0, BOWL_NOTES[rng.integers(len(BOWL_NOTES))]) * rng.uniform(0.55, 0.9)
+        pan = rng.uniform(0.3, 0.7)
+        place_wrap(left, strike * (1 - pan), int(t * SR))
+        place_wrap(right, strike * pan, int(t * SR))
+        t += rng.uniform(7.0, 11.0)
+    left = circular_reverb(left, rng, 4.0, 0.4)
+    right = circular_reverb(right, rng, 4.0, 0.4)
+    return np.stack([left, right], axis=1)
+
+
+def cricket_chirp(freq: float) -> np.ndarray:
+    """One chirp: three quick pulses of a high tone."""
+    pulse_n = int(SR * 0.018)
+    gap_n = int(SR * 0.012)
+    t = np.arange(pulse_n) / SR
+    pulse = np.sin(2 * np.pi * freq * t) * np.sin(np.pi * np.arange(pulse_n) / pulse_n) ** 2
+    out = np.zeros(3 * (pulse_n + gap_n))
+    for i in range(3):
+        out[i * (pulse_n + gap_n): i * (pulse_n + gap_n) + pulse_n] = pulse
+    return out
+
+
+def sound_crickets(rng, n):
+    """A summer night: a few crickets near and far over a soft breeze."""
+    left = np.zeros(n)
+    right = np.zeros(n)
+    for _ in range(5):
+        freq = rng.uniform(4200, 5200)
+        gain = rng.uniform(0.15, 0.6)
+        pan = rng.uniform(0.1, 0.9)
+        chirp = cricket_chirp(freq) * gain
+        period = rng.uniform(0.45, 0.8)
+        t = rng.uniform(0, period)
+        while t < n / SR:
+            place_wrap(left, chirp * (1 - pan), int(t * SR))
+            place_wrap(right, chirp * pan, int(t * SR))
+            t += period * rng.uniform(0.92, 1.08)
+    breeze = loop_curve(n, [(4, 1.0), (9, 0.4)])
+    for side in (left, right):
+        wind = circular_filter(pink(rng, n), lambda x: lowpass(x, 500))
+        side += 0.5 * wind / (np.sqrt(np.mean(wind ** 2)) + 1e-9) * np.std(left + 1e-9) * (0.4 + breeze)
+    return np.stack([left, right], axis=1)
+
+
+def sound_stream(rng, n):
+    """A small stream: rushing water with bubbles and trickles."""
+
+    def mono(r, k):
+        rush = bandpass(white(r, k), 300, 2500) * (0.6 + 0.4 * smooth_noise(r, k, 3.0))
+        bubbles = droplets(r, k, 40, 500, 2500, 25, 3.0)
+        return rush / (np.std(rush) + 1e-9) + bubbles / (np.std(bubbles) + 1e-9) * 0.5
+
+    return stereo(rng, mono, n, 0.5)
+
+
+def breath_cue(freq: float, seconds: float, gain: float) -> np.ndarray:
+    """A short, soft tone for the breathing pacer, faded in and out so it never clicks."""
+    n = int(SR * seconds)
+    tone = chime(freq, seconds)[:n]
+    fade = np.minimum(1, np.arange(n)[::-1] / (SR * 0.3))
+    return tone * fade * gain
+
+
+CUES = {
+    "in": lambda: breath_cue(392.0, 1.6, 0.5),
+    "hold": lambda: breath_cue(587.33, 0.8, 0.25),
+    "out": lambda: breath_cue(293.66, 1.8, 0.5),
+}
+OUT_CUES = ROOT / "assets" / "audio" / "cues"
+
+
+def generate_cues() -> None:
+    print("Breathing cues")
+    for cid, make in CUES.items():
+        mono = make()
+        mono = mono / (np.max(np.abs(mono)) + 1e-9) * 10 ** (-6 / 20)
+        encode(np.stack([mono, mono], axis=1), OUT_CUES / f"{cid}.m4a", 96000)
+
+
 SOUNDS = {
     "rain": sound_rain,
     "chimes": sound_chimes,
@@ -671,13 +808,21 @@ SOUNDS = {
     "bells": sound_bells,
     "car": sound_car,
     "shush": sound_shush,
+    "delta": sound_delta,
+    "theta": sound_theta,
+    "alpha": sound_alpha,
+    "om": sound_om,
+    "bowls": sound_bowls,
+    "crickets": sound_crickets,
+    "stream": sound_stream,
 }
 
 # Sounds built as exact circles (no crossfade needed): their notes and reverb wrap around.
-CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush"}
+CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush", "delta", "theta", "alpha", "om", "bowls", "crickets"}
 
 # Per-sound loudness, so the set feels consistent when switching between them.
-SOUND_LEVEL_DB = {"rain": -29, "lullaby": -23, "bells": -24, "chimes": -25, "heartbeat": -22, "guitar": -23, "fan": -21, "car": -26, "shush": -29}
+SOUND_LEVEL_DB = {"rain": -29, "lullaby": -23, "bells": -24, "chimes": -25, "heartbeat": -22, "guitar": -23, "fan": -21, "car": -26, "shush": -29,
+                  "delta": -24, "theta": -25, "alpha": -25, "om": -23, "bowls": -24, "crickets": -28, "stream": -26}
 
 
 def generate_sounds(only: list[str]) -> None:
@@ -1062,6 +1207,9 @@ def write_audio_map() -> None:
     lines += ["};", "", "export const SOUNDSCAPE_AUDIO: Record<string, number> = {"]
     for item in CATALOG["soundscapes"]:
         lines.append(f"  '{item['id']}': require('../../assets/audio/sounds/{item['id']}.m4a'),")
+    lines += ["};", "", "export const CUE_AUDIO: Record<string, number> = {"]
+    for cid in CUES:
+        lines.append(f"  '{cid}': require('../../assets/audio/cues/{cid}.m4a'),")
     lines += ["};", ""]
     AUDIO_MAP.parent.mkdir(parents=True, exist_ok=True)
     AUDIO_MAP.write_text("\n".join(lines))
@@ -1069,15 +1217,21 @@ def write_audio_map() -> None:
 
 
 if __name__ == "__main__":
-    # all | sounds [id ...] | meditations [id ...] | voice | map
+    # all | sounds [id ...] | meditations [id ...] | cues | voice | map
     args = sys.argv[1:]
     target = args[0] if args else "all"
     rest = args[1:]
+    if target == "cues":
+        generate_cues()
+        write_audio_map()
+        sys.exit()
     if target == "voice":
         design_voice()
         sys.exit()
     if target in ("all", "sounds"):
         generate_sounds(rest if target == "sounds" else [])
+    if target == "all":
+        generate_cues()
     if target in ("all", "meditations"):
         generate_meditations(rest if target == "meditations" else [])
     write_audio_map()

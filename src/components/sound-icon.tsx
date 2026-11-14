@@ -95,6 +95,53 @@ export function SoundIcon({ id, color, size = 32 }: { id: string; color: string;
             <Rect x={14} y={15.5} width={4} height={14} rx={2} />
           </G>
         );
+      case 'delta':
+      case 'theta':
+      case 'alpha': {
+        // Headphones with a wave between the ears. Faster beats get more wave peaks.
+        const peaks = id === 'delta' ? 1 : id === 'theta' ? 2 : 3;
+        const step = 12 / peaks;
+        let wave = 'M10 17';
+        for (let i = 0; i < peaks; i++) wave += ` q${step / 4} -4 ${step / 2} 0 q${step / 4} 4 ${step / 2} 0`;
+        return (
+          <G {...stroke}>
+            <Path d="M6 20v-3a10 10 0 0 1 20 0v3" />
+            <Rect x={4} y={19} width={5} height={8} rx={2} />
+            <Rect x={23} y={19} width={5} height={8} rx={2} />
+            <Path d={wave} />
+          </G>
+        );
+      }
+      case 'om':
+        return (
+          <G {...stroke}>
+            <Path d="M4 16h3l2-5 3 10 3-12 3 14 3-12 3 10 2-5h2" />
+          </G>
+        );
+      case 'bowls':
+        return (
+          <G {...stroke}>
+            <Path d="M5 15h22a11 9 0 0 1-22 0z" />
+            <Path d="M9 27h14" />
+            <Path d="M21 6l4-3" />
+            <Path d="M13 10q3-2 6 0" />
+          </G>
+        );
+      case 'crickets':
+        return (
+          <G {...stroke}>
+            <Path d="M22 6a8 8 0 1 0 4 12 9 9 0 0 1-4-12z" />
+            <Path d="M5 9l1.5 1.5M9 5l.5 2M4 14h2" />
+          </G>
+        );
+      case 'stream':
+        return (
+          <G {...stroke}>
+            <Path d="M4 11q4-3 8 0t8 0 8 0" />
+            <Path d="M4 17q4-3 8 0t8 0 8 0" />
+            <Path d="M4 23q4-3 8 0t8 0 8 0" />
+          </G>
+        );
       default:
         return <Circle cx={16} cy={16} r={10} {...stroke} />;
     }

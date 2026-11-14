@@ -37,6 +37,15 @@ export const MIX_PRESETS: MixPreset[] = [
     ],
   },
   {
+    id: 'deep-meditation',
+    title: 'Deep meditation',
+    description: 'Singing bowls over a low, breathing om.',
+    sounds: [
+      { id: 'bowls', volume: 0.7 },
+      { id: 'om', volume: 0.4 },
+    ],
+  },
+  {
     id: 'nap-time',
     title: 'Nap time',
     description: 'A car ride, gentle shushing and a slow heartbeat.',

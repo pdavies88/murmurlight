@@ -13,7 +13,7 @@ You already have a Play Console developer account and a verified Android device 
 
 | Field | Value |
 | --- | --- |
-| App name | Lullmix |
+| App name | Murmurlight |
 | Default language | English (United States) |
 | App or game | App |
 | Free or paid | Free |
@@ -46,7 +46,7 @@ npx eas-cli@latest build --platform android --profile production
 
 | Field | Value |
 | --- | --- |
-| App name | `Lullmix` |
+| App name | `Murmurlight` |
 | Short description | `Free guided meditations and sleep sounds that work completely offline.` (70/80) |
 | App icon | `play-icon-512.png` |
 | Feature graphic | `feature-graphic-1024x500.png` |

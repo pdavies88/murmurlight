@@ -1,4 +1,4 @@
-export const APP_NAME = 'Lullmix';
+export const APP_NAME = 'Murmurlight';
 export const APP_TAGLINE = 'Mix your own sleep sounds, breathe and meditate. Free and offline.';
 
 // Public pages served by GitHub Pages from the docs/ folder of the repo.

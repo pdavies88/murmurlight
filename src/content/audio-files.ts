@@ -32,4 +32,17 @@ export const SOUNDSCAPE_AUDIO: Record<string, number> = {
   'bells': require('../../assets/audio/sounds/bells.m4a'),
   'car': require('../../assets/audio/sounds/car.m4a'),
   'shush': require('../../assets/audio/sounds/shush.m4a'),
+  'delta': require('../../assets/audio/sounds/delta.m4a'),
+  'theta': require('../../assets/audio/sounds/theta.m4a'),
+  'alpha': require('../../assets/audio/sounds/alpha.m4a'),
+  'om': require('../../assets/audio/sounds/om.m4a'),
+  'bowls': require('../../assets/audio/sounds/bowls.m4a'),
+  'crickets': require('../../assets/audio/sounds/crickets.m4a'),
+  'stream': require('../../assets/audio/sounds/stream.m4a'),
+};
+
+export const CUE_AUDIO: Record<string, number> = {
+  'in': require('../../assets/audio/cues/in.m4a'),
+  'hold': require('../../assets/audio/cues/hold.m4a'),
+  'out': require('../../assets/audio/cues/out.m4a'),
 };

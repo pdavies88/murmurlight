@@ -1,4 +1,4 @@
-# Guided meditation scripts for Lullmix.
+# Guided meditation scripts for Murmurlight.
 #
 # Format:
 #   ## <meditation id> <bed>  starts a meditation. Ids match content/catalog.json. The bed is the

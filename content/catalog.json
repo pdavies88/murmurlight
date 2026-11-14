@@ -186,6 +186,44 @@
       "id": "shush",
       "title": "Gentle Shush",
       "description": "Soft, steady shushing to settle little ones."
+    },
+    {
+      "id": "delta",
+      "title": "Delta Beats",
+      "description": "A slow 2 Hz binaural pulse over a low hum.",
+      "group": "binaural"
+    },
+    {
+      "id": "theta",
+      "title": "Theta Beats",
+      "description": "A gentle 6 Hz binaural pulse for quiet, drifting moments.",
+      "group": "binaural"
+    },
+    {
+      "id": "alpha",
+      "title": "Alpha Beats",
+      "description": "A calm 10 Hz binaural pulse for reading or focus.",
+      "group": "binaural"
+    },
+    {
+      "id": "om",
+      "title": "Om Drone",
+      "description": "One low, breathing note, like a long chanted om."
+    },
+    {
+      "id": "bowls",
+      "title": "Singing Bowls",
+      "description": "Bowls struck one at a time and left to ring."
+    },
+    {
+      "id": "crickets",
+      "title": "Summer Night",
+      "description": "Crickets near and far over a soft breeze."
+    },
+    {
+      "id": "stream",
+      "title": "Gentle Stream",
+      "description": "Water rushing and bubbling over stones."
     }
   ]
 }

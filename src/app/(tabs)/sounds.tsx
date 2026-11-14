@@ -51,7 +51,23 @@ export default function SoundsScreen() {
             Build your own
           </ThemedText>
           <View style={styles.grid}>
-            {SOUNDSCAPES.map((soundscape) => (
+            {SOUNDSCAPES.filter((soundscape) => soundscape.group !== 'binaural').map((soundscape) => (
+              <View key={soundscape.id} style={[styles.tileSlot, { width: tileWidth }]}>
+                <SoundTile soundscape={soundscape} />
+              </View>
+            ))}
+          </View>
+          <View style={styles.header}>
+            <ThemedText style={styles.sectionTitle} accessibilityRole="header">
+              Binaural beats
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Wear headphones. Each ear hears a slightly different tone, and together they make a slow pulse. Mix
+              them with any sound above.
+            </ThemedText>
+          </View>
+          <View style={styles.grid}>
+            {SOUNDSCAPES.filter((soundscape) => soundscape.group === 'binaural').map((soundscape) => (
               <View key={soundscape.id} style={[styles.tileSlot, { width: tileWidth }]}>
                 <SoundTile soundscape={soundscape} />
               </View>
@@ -164,7 +180,7 @@ function MixCard() {
 
 function PresetCard({ preset }: { preset: MixPreset }) {
   const theme = useTheme();
-  const { mix, mixPlaying, playPreset } = usePlayback();
+  const { mix, mixPlaying, playPreset, toggleMix } = usePlayback();
   const playing =
     mixPlaying &&
     mix.length === preset.sounds.length &&
@@ -176,8 +192,9 @@ function PresetCard({ preset }: { preset: MixPreset }) {
       accessibilityRole="button"
       accessibilityState={{ selected: playing }}
       accessibilityLabel={`${preset.title}. ${names}`}
-      accessibilityHint="Replaces your mix with this one and plays it"
-      onPress={() => playPreset(preset.sounds)}
+      accessibilityHint={playing ? 'Stops this mix' : 'Replaces your mix with this one and plays it'}
+      // A second tap stops it, like a sound tile.
+      onPress={() => (playing ? toggleMix() : playPreset(preset.sounds))}
       style={({ pressed }) => [
         styles.preset,
         {

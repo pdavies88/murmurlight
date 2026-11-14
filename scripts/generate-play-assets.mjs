@@ -36,7 +36,7 @@ const featureGraphic = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" hei
   <circle cx="880" cy="60" r="360" fill="url(#violet)"/>
   <circle cx="120" cy="470" r="280" fill="url(#rose)"/>
   ${logo}
-  <text x="330" y="232" font-family="Manrope" font-weight="800" font-size="68" letter-spacing="-2" fill="#F3F1FF">Lullmix</text>
+  <text x="330" y="232" font-family="Manrope" font-weight="800" font-size="68" letter-spacing="-2" fill="#F3F1FF">Murmurlight</text>
   <text x="333" y="292" font-family="Manrope" font-weight="600" font-size="34" letter-spacing="-0.5" fill="#C9BFFF">Meditations &amp; soothing sounds</text>
   <text x="333" y="345" font-family="Manrope" font-weight="500" font-size="24" fill="#A9A6C4">Free · works offline · plays with your screen locked</text>
 </svg>`;

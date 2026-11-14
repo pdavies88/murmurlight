@@ -24,8 +24,9 @@ import { formatClock } from '@/lib/time';
 const ORB_SIZE = 200;
 /** The orb never takes more than this share of the player's height, so the controls fit. */
 const MAX_ORB_SHARE = 0.3;
-/** In two columns the orb shares its column only with the titles, so it can take a little more of the height. */
-const MAX_WIDE_ORB_SHARE = 0.35;
+/** In landscape: room at the top for the close button, and under the orb for the title. */
+const WIDE_TOP = 56;
+const TITLE_HEIGHT = 72;
 
 /** Full-screen player for guided meditations. Sounds are mixed on the Sounds tab. */
 export default function PlayerScreen() {
@@ -36,7 +37,9 @@ export default function PlayerScreen() {
   const [frame, setFrame] = useState({ width: 0, height: 0 });
   // A phone in landscape is too short for one column, so the controls move beside the orb.
   const wide = frame.width > frame.height && frame.height > 0;
-  const orbSize = Math.min(ORB_SIZE, (frame.height || ORB_SIZE / MAX_ORB_SHARE) * (wide ? MAX_WIDE_ORB_SHARE : MAX_ORB_SHARE));
+  const orbSize = wide
+    ? Math.min(ORB_SIZE, frame.height - WIDE_TOP - Spacing.four - TITLE_HEIGHT - Spacing.three)
+    : Math.min(ORB_SIZE, (frame.height || ORB_SIZE / MAX_ORB_SHARE) * MAX_ORB_SHARE);
 
   // Closing the player (the close button, a swipe down or Android back) ends the meditation.
   const endMeditation = useEffectEvent(() => {
@@ -72,57 +75,105 @@ export default function PlayerScreen() {
           const { width, height } = event.nativeEvent.layout;
           setFrame({ width, height });
         }}>
-        {/* Scrolls only when the player is too short for everything. */}
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={[styles.content, wide && styles.contentWide]}>
-          <View style={[styles.column, wide && styles.columnWide]}>
-            <BreathingOrb size={orbSize} />
+        {wide ? (
+          // Landscape fits on one screen: the orb and title on the left, the controls on the right.
+          <View style={styles.wide}>
+            <View style={styles.half}>
+              <BreathingOrb size={orbSize} />
 
-            <View style={styles.titles}>
-              <ThemedText style={styles.title}>{track.title}</ThemedText>
-              <ThemedText themeColor="textSecondary">{track.subtitle}</ThemedText>
-            </View>
-          </View>
-
-          <View style={[styles.column, wide && styles.columnWide]}>
-            <View style={styles.progress}>
-              <ProgressBar />
-              <View style={styles.times}>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {formatClock(position)}
-                </ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  -{formatClock(duration - position)}
-                </ThemedText>
+              <View style={styles.titles}>
+                <ThemedText style={styles.title}>{track.title}</ThemedText>
+                <ThemedText themeColor="textSecondary">{track.subtitle}</ThemedText>
               </View>
             </View>
+            <View style={styles.half}>
+              <View style={styles.progress}>
+                <ProgressBar />
+                <View style={styles.times}>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    {formatClock(position)}
+                  </ThemedText>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    -{formatClock(duration - position)}
+                  </ThemedText>
+                </View>
+              </View>
 
-            {finished ? <ThemedText style={styles.finished}>Session complete. Well done.</ThemedText> : null}
+              {finished ? <ThemedText style={styles.finished}>Session complete. Well done.</ThemedText> : null}
 
-            <View style={styles.controls}>
-              <SkipButton seconds={-SKIP_SECONDS} onPress={() => seekBy(-SKIP_SECONDS)} />
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={isPlaying ? 'Pause' : finished ? 'Play again' : 'Play'}
-                onPress={toggle}
-                style={({ pressed }) => [
-                  styles.play,
-                  { backgroundColor: theme.tint, transform: [{ scale: pressed ? 0.95 : 1 }] },
-                ]}>
-                <PlayPauseIcon playing={isPlaying} color={theme.onTint} size={34} />
-              </Pressable>
-              <SkipButton seconds={SKIP_SECONDS} onPress={() => seekBy(SKIP_SECONDS)} />
+              <View style={styles.controls}>
+                <SkipButton seconds={-SKIP_SECONDS} onPress={() => seekBy(-SKIP_SECONDS)} />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={isPlaying ? 'Pause' : finished ? 'Play again' : 'Play'}
+                  onPress={toggle}
+                  style={({ pressed }) => [
+                    styles.play,
+                    { backgroundColor: theme.tint, transform: [{ scale: pressed ? 0.95 : 1 }] },
+                  ]}>
+                  <PlayPauseIcon playing={isPlaying} color={theme.onTint} size={34} />
+                </Pressable>
+                <SkipButton seconds={SKIP_SECONDS} onPress={() => seekBy(SKIP_SECONDS)} />
+              </View>
+
+              <Button
+                title="End session"
+                variant="secondary"
+                // Closing the player ends the meditation, so going back is all this needs to do.
+                onPress={() => router.back()}
+              />
             </View>
-
-            <Button
-              title="End session"
-              variant="secondary"
-              // Closing the player ends the meditation, so going back is all this needs to do.
-              onPress={() => router.back()}
-            />
           </View>
-        </ScrollView>
+        ) : (
+          // Scrolls only when the player is too short for everything.
+          <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
+            <View style={styles.column}>
+              <BreathingOrb size={orbSize} />
+
+              <View style={styles.titles}>
+                <ThemedText style={styles.title}>{track.title}</ThemedText>
+                <ThemedText themeColor="textSecondary">{track.subtitle}</ThemedText>
+              </View>
+            </View>
+            <View style={styles.column}>
+              <View style={styles.progress}>
+                <ProgressBar />
+                <View style={styles.times}>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    {formatClock(position)}
+                  </ThemedText>
+                  <ThemedText type="small" themeColor="textSecondary">
+                    -{formatClock(duration - position)}
+                  </ThemedText>
+                </View>
+              </View>
+
+              {finished ? <ThemedText style={styles.finished}>Session complete. Well done.</ThemedText> : null}
+
+              <View style={styles.controls}>
+                <SkipButton seconds={-SKIP_SECONDS} onPress={() => seekBy(-SKIP_SECONDS)} />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={isPlaying ? 'Pause' : finished ? 'Play again' : 'Play'}
+                  onPress={toggle}
+                  style={({ pressed }) => [
+                    styles.play,
+                    { backgroundColor: theme.tint, transform: [{ scale: pressed ? 0.95 : 1 }] },
+                  ]}>
+                  <PlayPauseIcon playing={isPlaying} color={theme.onTint} size={34} />
+                </Pressable>
+                <SkipButton seconds={SKIP_SECONDS} onPress={() => seekBy(SKIP_SECONDS)} />
+              </View>
+
+              <Button
+                title="End session"
+                variant="secondary"
+                // Closing the player ends the meditation, so going back is all this needs to do.
+                onPress={() => router.back()}
+              />
+            </View>
+          </ScrollView>
+        )}
       </SafeAreaView>
     </ThemedView>
   );
@@ -218,16 +269,22 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
-  contentWide: {
+  wide: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: WIDE_TOP,
+    paddingBottom: Spacing.four,
+    paddingHorizontal: Spacing.five,
     gap: Spacing.five,
+  },
+  half: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: Spacing.three,
   },
   column: {
     gap: Spacing.four,
-  },
-  columnWide: {
-    flex: 1,
   },
   orb: {
     alignSelf: 'center',

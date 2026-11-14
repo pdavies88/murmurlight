@@ -1,13 +1,13 @@
 # App Store release kit
 
-Everything App Store Connect asks for, ready to paste. Fill these in on the **website** (appstoreconnect.apple.com → Apps → Lullmix). The App Store Connect iPhone app can't edit versions.
+Everything App Store Connect asks for, ready to paste. Fill these in on the **website** (appstoreconnect.apple.com → Apps → Murmurlight). The App Store Connect iPhone app can't edit versions.
 
 ## Go-live checklist
 
 - [ ] Repo is public and GitHub Pages serves `docs/`, so the URLs below open.
 - [ ] A TestFlight build plays a mix with the sleep timer, a meditation and the wind-down routine with the screen locked on a real iPhone. The sleep timer shows as a Live Activity.
 - [ ] Version page: build selected, old screenshots deleted and the 2.0 set uploaded, promotional text, What's New, description, keywords, support URL, copyright.
-- [ ] App Information: name `Lullmix` and subtitle `Sleep Sound Mixer & Breathing`.
+- [ ] App Information: name `Murmurlight` and subtitle `Sleep Sound Mixer & Breathing`.
 - [ ] App Information: categories, content rights, age rating.
 - [ ] App Privacy: "Data Not Collected", then **Publish**.
 - [ ] Regulated medical device: **No**.
@@ -20,11 +20,11 @@ Everything App Store Connect asks for, ready to paste. Fill these in on the **we
 The Expo account is out of EAS cloud build credits, so build on this Mac and submit the result. A local build uses no credits.
 
 ```bash
-npx eas-cli@latest build --platform ios --profile production --local --output ./build/Lullmix.ipa
+npx eas-cli@latest build --platform ios --profile production --local --output ./build/Murmurlight.ipa
 ```
 
 ```bash
-npx eas-cli@latest submit --platform ios --profile production --path ./build/Lullmix.ipa
+npx eas-cli@latest submit --platform ios --profile production --path ./build/Murmurlight.ipa
 ```
 
 Version 2.0 adds a widget extension for the sleep timer Live Activity (`com.pdavies.relaxationstation.ExpoWidgetsTarget`) and an app group (`group.com.pdavies.relaxationstation`). The first build after that change must create a provisioning profile for the extension, so run it **without** `--non-interactive` and sign in to Apple when EAS asks. Later builds can add `--non-interactive`.
@@ -45,7 +45,7 @@ The app links to the privacy policy and support page from its **About** tab, as 
 
 | Field | Value | Limit |
 | --- | --- | --- |
-| Name | Lullmix (see the note below) | 30 |
+| Name | Murmurlight (see the note below) | 30 |
 | Subtitle | Sleep Sound Mixer & Breathing | 30 |
 | Primary category | Health & Fitness | |
 | Secondary category | Lifestyle | |
@@ -53,24 +53,26 @@ The app links to the privacy policy and support page from its **About** tab, as 
 | Copyright | 2026 Preston Davies | |
 | Price | Free | |
 
-**App name note:** version 1.2.1 was rejected on November 13, 2026 under guideline 4.3(a), spam: Apple saw it as too similar to other meditation and sound apps. Version 2.0 answers that with new features and a new name. Another developer holds "Relaxation Station", so the store name was "Relaxation Station: Sleep". For 2.0, change **App Information → Name** to `Lullmix`. No live app used that name on November 13, 2026. The home screen name comes from `app.json` and is also "Lullmix".
+**App name note:** version 1.2.1 was rejected on November 13, 2026 under guideline 4.3(a), spam: Apple saw it as too similar to other meditation and sound apps. Version 2.0 answers that with new features and a new name. Other developers hold "Relaxation Station" and "Lullmix", so 2.0 uses `Murmurlight`. Set it in **App Information → Name**. No live app used that name on November 14, 2026. The home screen name comes from `app.json` and is also "Murmurlight".
 
 ### Promotional text (170 characters)
 
 ```
-Build your own sleep sound mix, breathe with a guided pacer and drift off with a sleep timer. Free forever: no subscription, no account, no ads, and it works offline.
+Mix sleep sounds and binaural beats, breathe with a guided pacer and drift off with a sleep timer. Free forever: no subscription, no account, no ads, works offline.
 ```
 
 ### What's New in 2.0 (4,000 characters)
 
 ```
-Relaxation Station is now Lullmix, with new ways to wind down. Everything is still free.
+Relaxation Station is now Murmurlight, with new ways to wind down. Everything is still free.
+
+- 7 new sounds: Delta, Theta and Alpha binaural beats, Om Drone, Singing Bowls, Summer Night and Gentle Stream.
 
 - Sound mixer: layer up to 4 sounds and set the volume of each. Your mix is saved on your phone.
-- Ready-made mixes: Rainy cabin, Night shore, Deep focus and Nap time.
+- Ready-made mixes: Rainy cabin, Night shore, Deep focus, Deep meditation and Nap time.
 - Drift: each sound slowly rises and falls, so your mix never sounds like a loop.
 - Sleep timer: 15 to 60 minutes, with a one-minute fade-out. It counts down on your Lock Screen and in the Dynamic Island.
-- Breathe: a pacer that grows and shrinks with your breath, with a tap at each change so you can close your eyes.
+- Breathe: a pacer that grows and shrinks with your breath, with a soft tone and a tap at each change so you can close your eyes.
 - Wind down: one tap runs two minutes of breathing, a sleep meditation, then your mix with the sleep timer.
 - Optimized for iPhone Duo, and every iPhone now turns sideways.
 ```
@@ -78,10 +80,13 @@ Relaxation Station is now Lullmix, with new ways to wind down. Everything is sti
 ### Description (4,000 characters)
 
 ```
-Lullmix is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
+Murmurlight is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
 
 YOUR OWN SOUND MIX
-Layer up to 4 of 12 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride and Gentle Shush. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Lullmix saves your mix, so it's one tap away tomorrow night. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus or Nap time.
+Layer up to 4 of 19 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride, Gentle Shush, Om Drone, Singing Bowls, Summer Night and Gentle Stream. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Murmurlight saves your mix, so it's one tap away tomorrow night. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation or Nap time.
+
+BINAURAL BEATS
+Delta (2 Hz), Theta (6 Hz) and Alpha (10 Hz). With headphones, each ear hears a slightly different tone, and together they make a slow pulse. Layer them under any sound.
 
 A SLEEP TIMER THAT FADES OUT
 Choose 15, 30, 45 or 60 minutes. Your mix fades out over the last minute instead of stopping with a jolt. The countdown shows on your Lock Screen and in the Dynamic Island.
@@ -90,10 +95,10 @@ WIND DOWN IN ONE TAP
 Two minutes of slow breathing, a guided sleep meditation, then your mix with the sleep timer. Lock your phone after the first step and let the rest play.
 
 BREATHE
-Follow an orb that grows as you breathe in and shrinks as you breathe out. Choose Box (4-4-4-4), Long exhale (4-7-8) or Even (5-5). A gentle tap marks each change, so it works with your eyes closed.
+Follow an orb that grows as you breathe in and shrinks as you breathe out. Choose Box (4-4-4-4), Long exhale (4-7-8) or Even (5-5). A soft tone and a gentle tap mark each change, so it works with your eyes closed.
 
 15 GUIDED MEDITATIONS
-Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute sessions. Every script was written and voiced for Lullmix.
+Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute sessions. Every script was written and voiced for Murmurlight.
 
 FREE AND PRIVATE
 - Every feature is free. There is nothing to unlock.
@@ -108,7 +113,7 @@ The meditations are for relaxation and general wellbeing. They are not medical a
 ### Keywords (100 characters, comma-separated, no spaces after commas)
 
 ```
-sleep sounds,sound mixer,white noise,brown noise,rain,breathing,sleep timer,meditation,nap,offline
+sleep sounds,binaural beats,sound mixer,white noise,brown noise,rain,breathing,sleep timer,nap
 ```
 
 ## App Privacy questionnaire
@@ -148,21 +153,22 @@ Version 2.0 replies to the guideline 4.3(a) rejection of 1.2.1. Record the scree
 
 ```
 RESPONSE TO THE 4.3(a) REJECTION OF 1.2.1
-Thank you for the review. We agreed that 1.2.1 looked like other meditation and sound apps, so 2.0 adds features built for this app and a new, unique name (Lullmix, formerly Relaxation Station):
-- Sound mixer: layer up to 4 of 12 sounds with a volume for each, saved on the device. Four ready-made mixes.
+Thank you for the review. We agreed that 1.2.1 looked like other meditation and sound apps, so 2.0 adds features built for this app and a new, unique name (Murmurlight, formerly Relaxation Station):
+- Sound mixer: layer up to 4 of 19 sounds with a volume for each, saved on the device. Five ready-made mixes.
+- Binaural beats: Delta, Theta and Alpha, generated for this app as stereo tone pairs. No health claims are made.
 - Drift: each sound's volume slowly rises and falls on its own wave, so the mix never repeats like a loop.
 - Sleep timer with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
-- Breathe tab: a breathing pacer with three patterns and haptic taps at each change, usable with eyes closed.
+- Breathe tab: a breathing pacer with three patterns, and soft tones and haptic taps at each change, usable with eyes closed.
 - Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
 - Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
 
-This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 12 sounds were synthesized for it. The developer has no other meditation or sound apps.
+This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 19 sounds were synthesized for it. The developer has no other meditation or sound apps.
 
 1. SCREEN RECORDING
 Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the Breathe tab, the wind-down routine with the screen locked, and the About tab. The app has no login, user-generated content or in-app purchases.
 
 2. PURPOSE AND AUDIENCE
-Lullmix is for anyone who wants to fall asleep, nap or relax. Its core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
+Murmurlight is for anyone who wants to fall asleep, nap or relax. Its core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
 
 3. SETUP AND TEST INSTRUCTIONS
 No login or setup is needed. All audio is bundled.
@@ -193,7 +199,7 @@ All content was made for this app. The narration was generated with the open-sou
 Record on a physical iPhone running the latest iOS, in about 3 minutes. Install the submitted build from TestFlight first.
 
 1. Add **Screen Recording** to Control Center (Settings → Control Center) if it isn't there. Start a recording from Control Center.
-2. On the Home Screen, tap the Lullmix icon.
+2. On the Home Screen, tap the Murmurlight icon.
 3. **Sounds** tab: tap Gentle Rain and Crackling Fire, drag both volume bars, and turn on Drift. Choose a 15 minute sleep timer.
 4. Lock the phone and wake it to show the Live Activity counting down. Unlock.
 5. Tap the **Rainy cabin** ready-made mix.

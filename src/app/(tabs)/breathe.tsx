@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, View, type LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BreathOrb } from '@/components/breath-orb';
@@ -9,37 +9,58 @@ import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useBreathSession } from '@/hooks/use-breath-session';
-import { BREATH_PATTERNS } from '@/lib/breathing';
+import { BREATH_PATTERNS, type BreathPattern } from '@/lib/breathing';
 
 /** The pacer orb's full size, before it shrinks to fit short screens. */
 const ORB_SIZE = 240;
-/** The orb never takes more than this share of the screen's height, so the controls fit. */
+/** In portrait the orb never takes more than this share of the screen's height, so the controls fit. */
 const MAX_ORB_SHARE = 0.32;
-const MAX_WIDE_ORB_SHARE = 0.4;
+/** Room under the orb in landscape for the phase name and countdown. */
+const PHASE_HEIGHT = 72;
 /** Screens shorter than this, such as a phone in landscape, drop the instructions to fit. */
 const SHORT_SCREEN = 600;
 
-/** A breathing pacer: an orb that grows and shrinks to a chosen pattern, with a countdown and haptics. */
+/** A breathing pacer: an orb that grows and shrinks to a chosen pattern, with a countdown, tones and haptics. */
 export default function BreatheScreen() {
-  const theme = useTheme();
   const [patternId, setPatternId] = useState(BREATH_PATTERNS[0].id);
   const pattern = BREATH_PATTERNS.find((entry) => entry.id === patternId) ?? BREATH_PATTERNS[0];
   const [startedAt, setStartedAt] = useState<number | null>(null);
-  const { running, moment, orbStyle } = useBreathSession(pattern, startedAt);
+  const [withSound, setWithSound] = useState(true);
+  const { running, moment, orbStyle } = useBreathSession(pattern, startedAt, withSound);
 
-  // Measured from the screen itself, so a phone in landscape puts the controls beside the orb.
+  // Measured from the screen itself. Wider than tall, such as a phone in landscape, puts the
+  // controls beside the orb and fits everything on one screen with no scrolling.
   const [frame, setFrame] = useState({ width: 0, height: 0 });
   const wide = frame.width > frame.height && frame.height > 0;
   const short = frame.height > 0 && frame.height < SHORT_SCREEN;
-  const orbSize = Math.min(
-    ORB_SIZE,
-    (frame.height || ORB_SIZE / MAX_ORB_SHARE) * (wide ? MAX_WIDE_ORB_SHARE : MAX_ORB_SHARE),
+  const orbSize = wide
+    ? Math.min(ORB_SIZE, frame.height - BottomTabInset - Spacing.four * 2 - PHASE_HEIGHT - Spacing.three)
+    : Math.min(ORB_SIZE, (frame.height || ORB_SIZE / MAX_ORB_SHARE) * MAX_ORB_SHARE);
+
+  const orb = (
+    <View style={styles.orbColumn}>
+      <BreathOrb size={orbSize} style={orbStyle} />
+      <View style={styles.phase} accessibilityLiveRegion="polite">
+        <ThemedText style={styles.phaseLabel}>{running ? moment.phase.label : 'Ready when you are'}</ThemedText>
+        <ThemedText themeColor="textSecondary" style={styles.count}>
+          {running ? `${moment.secondsLeft}` : pattern.summary}
+        </ThemedText>
+      </View>
+    </View>
   );
 
-  const start = () => setStartedAt(Date.now());
-  const stop = () => setStartedAt(null);
-
-  const breaths = `Breath ${moment.cycles + 1}`;
+  const controls = (
+    <Controls
+      pattern={pattern}
+      running={running}
+      breathNumber={moment.cycles + 1}
+      onPattern={setPatternId}
+      withSound={withSound}
+      onSound={setWithSound}
+      onStart={() => setStartedAt(Date.now())}
+      onStop={() => setStartedAt(null)}
+    />
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -50,70 +71,103 @@ export default function BreatheScreen() {
           const { width, height } = event.nativeEvent.layout;
           setFrame({ width, height });
         }}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.content,
-            wide && styles.contentWide,
-            { paddingBottom: BottomTabInset + Spacing.four },
-          ]}>
-          <View style={[styles.column, wide && styles.columnWide]}>
-            {wide ? null : <Header />}
-            <BreathOrb size={orbSize} style={orbStyle} />
-            <View style={styles.phase} accessibilityLiveRegion="polite">
-              <ThemedText style={styles.phaseLabel}>{running ? moment.phase.label : 'Ready when you are'}</ThemedText>
-              <ThemedText themeColor="textSecondary" style={styles.count}>
-                {running ? `${moment.secondsLeft}` : pattern.summary}
-              </ThemedText>
+        {wide ? (
+          <View style={[styles.wide, { paddingBottom: BottomTabInset + Spacing.four }]}>
+            <View style={styles.half}>{orb}</View>
+            <View style={styles.half}>
+              <Header compact={short} />
+              {controls}
             </View>
           </View>
-
-          <View style={[styles.column, wide && styles.columnWide]}>
-            {wide ? <Header compact={short} /> : null}
-            <View style={styles.patterns} accessibilityRole="radiogroup">
-              {BREATH_PATTERNS.map((entry) => {
-                const selected = entry.id === pattern.id;
-                return (
-                  <Pressable
-                    key={entry.id}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected, disabled: running }}
-                    accessibilityLabel={`${entry.title}, ${entry.summary.replaceAll(' · ', ', ')} seconds. ${entry.description}`}
-                    disabled={running}
-                    onPress={() => setPatternId(entry.id)}
-                    style={[
-                      styles.pattern,
-                      {
-                        backgroundColor: selected ? theme.tint : theme.backgroundElement,
-                        opacity: running && !selected ? 0.45 : 1,
-                      },
-                    ]}>
-                    <ThemedText
-                      numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.75}
-                      style={[styles.patternTitle, { color: selected ? theme.onTint : theme.text }]}>
-                      {entry.title}
-                    </ThemedText>
-                    <ThemedText
-                      type="small"
-                      numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.75}
-                      style={{ color: selected ? theme.onTint : theme.textSecondary }}>
-                      {entry.summary}
-                    </ThemedText>
-                  </Pressable>
-                );
-              })}
-            </View>
-            <ThemedText type="small" themeColor="textSecondary" style={styles.centered}>
-              {running ? breaths : pattern.description}
-            </ThemedText>
-            <Button title={running ? 'Stop' : 'Start breathing'} variant={running ? 'secondary' : 'primary'} onPress={running ? stop : start} />
-          </View>
-        </ScrollView>
+        ) : (
+          <ScrollView contentContainerStyle={[styles.content, { paddingBottom: BottomTabInset + Spacing.four }]}>
+            <Header />
+            {orb}
+            {controls}
+          </ScrollView>
+        )}
       </SafeAreaView>
     </ThemedView>
+  );
+}
+
+function Controls({
+  pattern,
+  running,
+  breathNumber,
+  onPattern,
+  withSound,
+  onSound,
+  onStart,
+  onStop,
+}: {
+  pattern: BreathPattern;
+  running: boolean;
+  breathNumber: number;
+  onPattern: (id: string) => void;
+  withSound: boolean;
+  onSound: (on: boolean) => void;
+  onStart: () => void;
+  onStop: () => void;
+}) {
+  const theme = useTheme();
+  return (
+    <View style={styles.controls}>
+      <View style={styles.patterns} accessibilityRole="radiogroup">
+        {BREATH_PATTERNS.map((entry) => {
+          const selected = entry.id === pattern.id;
+          return (
+            <Pressable
+              key={entry.id}
+              accessibilityRole="radio"
+              accessibilityState={{ selected, disabled: running }}
+              accessibilityLabel={`${entry.title}, ${entry.summary.replaceAll(' · ', ', ')} seconds. ${entry.description}`}
+              disabled={running}
+              onPress={() => onPattern(entry.id)}
+              style={[
+                styles.pattern,
+                {
+                  backgroundColor: selected ? theme.tint : theme.backgroundElement,
+                  opacity: running && !selected ? 0.45 : 1,
+                },
+              ]}>
+              <ThemedText
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
+                style={[styles.patternTitle, { color: selected ? theme.onTint : theme.text }]}>
+                {entry.title}
+              </ThemedText>
+              <ThemedText
+                type="small"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.75}
+                style={{ color: selected ? theme.onTint : theme.textSecondary }}>
+                {entry.summary}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.centered}>
+        {running ? `Breath ${breathNumber}` : pattern.description}
+      </ThemedText>
+      <View style={styles.soundRow}>
+        <ThemedText style={styles.soundLabel}>Soft tones</ThemedText>
+        <Switch
+          accessibilityLabel="Soft tones at each change"
+          value={withSound}
+          onValueChange={onSound}
+          trackColor={{ true: theme.tint, false: theme.backgroundSelected }}
+        />
+      </View>
+      <Button
+        title={running ? 'Stop' : 'Start breathing'}
+        variant={running ? 'secondary' : 'primary'}
+        onPress={running ? onStop : onStart}
+      />
+    </View>
   );
 }
 
@@ -126,8 +180,8 @@ function Header({ compact = false }: { compact?: boolean }) {
       </ThemedText>
       {compact ? null : (
         <ThemedText themeColor="textSecondary">
-          Follow the orb. It grows as you breathe in and shrinks as you breathe out. A tap marks each change, so you
-          can close your eyes.
+          Follow the orb. It grows as you breathe in and shrinks as you breathe out. A soft tone and a tap mark each
+          change, so you can close your eyes.
         </ThemedText>
       )}
     </View>
@@ -146,16 +200,25 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
   },
-  contentWide: {
+  wide: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingTop: Spacing.four,
+    paddingHorizontal: Spacing.five,
     gap: Spacing.five,
   },
-  column: {
-    gap: Spacing.four,
-  },
-  columnWide: {
+  half: {
     flex: 1,
+    justifyContent: 'center',
+    gap: Spacing.three,
+  },
+  orbColumn: {
+    alignItems: 'center',
+    gap: Spacing.three,
+  },
+  controls: {
+    gap: Spacing.three,
   },
   header: {
     gap: Spacing.two,
@@ -198,6 +261,16 @@ const styles = StyleSheet.create({
     fontFamily: DisplayFont.bold,
     fontWeight: 'normal',
     textAlign: 'center',
+  },
+  soundRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 44,
+  },
+  soundLabel: {
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
   },
   centered: {
     textAlign: 'center',

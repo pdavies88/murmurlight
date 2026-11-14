@@ -32,7 +32,7 @@ const SleepTimerActivity = (props: SleepTimerActivityProps, environment: LiveAct
       <HStack modifiers={[padding({ all: 16 })]}>
         <Image systemName="moon.zzz.fill" color={accent} />
         <VStack alignment="leading">
-          <Text modifiers={[font({ weight: 'bold', size: 15 })]}>Lullmix</Text>
+          <Text modifiers={[font({ weight: 'bold', size: 15 })]}>Murmurlight</Text>
           <Text modifiers={[font({ size: 13 }), foregroundStyle('secondary')]}>{props.mix}</Text>
         </VStack>
         <Spacer />
