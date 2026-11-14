@@ -218,12 +218,15 @@ All screenshots come from a Release build of version 2.0.0 on the iPhone 18 Pro 
 | --- | --- | --- |
 | `screenshots/` | 1320 × 2868 | 6.9" display |
 | `screenshots/6.3-inch/` | 1206 × 2622 | 6.1" / 6.3" display, resized from the 6.9" set |
+| `screenshots/iphone-duo/` | 2853 × 2007 | iPhone Duo, the unfolded inner display |
 
-**Delete the old screenshots in App Store Connect** before uploading, including the old iPhone Duo set. They show version 1.2.1, and screenshots must match the app (guideline 2.3.3).
+**Delete the old screenshots in App Store Connect** before uploading, including the old iPhone Duo set, then upload the new Duo set. They show version 1.2.1, and screenshots must match the app (guideline 2.3.3).
 
 ### iPhone Duo screenshots
 
-There is no iPhone Duo set for 2.0 yet. Apple requires one from April 2027, and it adds the "optimized for iPhone Duo" badge. To make one, unfold the iPhone Duo simulator in Device Hub, run the Release build on it, and capture the same screens at 2853 × 2007.
+Ready to upload, in [`screenshots/iphone-duo/`](screenshots/iphone-duo/). They are 2853 × 2007 pixels, the unfolded inner display, from the same 2.0.0 Release build on the iPhone Duo simulator. Uploading them adds a badge to the product page saying the app is optimized for iPhone Duo, and Apple requires them from April 2027. Upload them in the same order as the iPhone set. Unfolded, the tabs run down the right edge, Breathe shows the orb beside its controls, and the player opens as a sheet.
+
+The Duo simulator has two displays. Capture the inner one with `xcrun simctl io <UDID> screenshot --display=3 <file>.png`. If the inner display freezes on one frame, fold and unfold the simulator in Device Hub.
 
 ### Retaking screenshots
 

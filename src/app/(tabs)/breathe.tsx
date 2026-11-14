@@ -16,6 +16,8 @@ const ORB_SIZE = 240;
 /** The orb never takes more than this share of the screen's height, so the controls fit. */
 const MAX_ORB_SHARE = 0.32;
 const MAX_WIDE_ORB_SHARE = 0.4;
+/** Screens shorter than this, such as a phone in landscape, drop the instructions to fit. */
+const SHORT_SCREEN = 600;
 
 /** A breathing pacer: an orb that grows and shrinks to a chosen pattern, with a countdown and haptics. */
 export default function BreatheScreen() {
@@ -28,6 +30,7 @@ export default function BreatheScreen() {
   // Measured from the screen itself, so a phone in landscape puts the controls beside the orb.
   const [frame, setFrame] = useState({ width: 0, height: 0 });
   const wide = frame.width > frame.height && frame.height > 0;
+  const short = frame.height > 0 && frame.height < SHORT_SCREEN;
   const orbSize = Math.min(
     ORB_SIZE,
     (frame.height || ORB_SIZE / MAX_ORB_SHARE) * (wide ? MAX_WIDE_ORB_SHARE : MAX_ORB_SHARE),
@@ -65,7 +68,7 @@ export default function BreatheScreen() {
           </View>
 
           <View style={[styles.column, wide && styles.columnWide]}>
-            {wide ? <Header compact /> : null}
+            {wide ? <Header compact={short} /> : null}
             <View style={styles.patterns} accessibilityRole="radiogroup">
               {BREATH_PATTERNS.map((entry) => {
                 const selected = entry.id === pattern.id;
@@ -114,7 +117,7 @@ export default function BreatheScreen() {
   );
 }
 
-/** In landscape there's no room for the instructions beside the orb, so only the title shows. */
+/** On short screens there's no room for the instructions beside the orb, so only the title shows. */
 function Header({ compact = false }: { compact?: boolean }) {
   return (
     <View style={styles.header}>
