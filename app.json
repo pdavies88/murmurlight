@@ -52,7 +52,7 @@
     "android": {
       "package": "com.pdavies.relaxationstation",
       "adaptiveIcon": {
-        "backgroundColor": "#2B2378",
+        "backgroundColor": "#1E1A55",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false,
@@ -99,7 +99,31 @@
       "expo-image",
       "expo-status-bar",
       "expo-web-browser",
-      "expo-widgets"
+      [
+        "expo-widgets",
+        {
+          "widgets": [
+            {
+              "name": "MixesWidget",
+              "displayName": "Your mixes",
+              "description": "Start a saved sound mix with one tap.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium"
+                ],
+                "initialLayout": "./src/widgets/mixes-widget.tsx"
+              }
+            }
+          ]
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "enableRemoteNotifications": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, StyleSheet, Switch, useWindowDimensions, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, TextInput, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PlayPauseIcon } from '@/components/play-pause-icon';
@@ -11,7 +12,7 @@ import { SOUNDSCAPES, findSoundscape, type Soundscape } from '@/content/catalog'
 import { MIX_PRESETS, type MixPreset } from '@/content/presets';
 import { usePlayback } from '@/context/playback-context';
 import { useTheme } from '@/hooks/use-theme';
-import { MAX_MIX_SOUNDS, TIMER_MINUTES } from '@/lib/mix';
+import { MAX_MIX_NAME, MAX_MIX_SOUNDS, TIMER_MINUTES, type NamedMix } from '@/lib/mix';
 import { formatClock } from '@/lib/time';
 
 /** Windows at least this wide, such as an unfolded iPhone Duo or a phone in landscape, get three columns. */
@@ -37,6 +38,7 @@ export default function SoundsScreen() {
             </ThemedText>
           </View>
           <MixCard />
+          <YourMixes />
           <View style={styles.section}>
             <ThemedText style={styles.sectionTitle} accessibilityRole="header">
               Ready-made mixes
@@ -93,8 +95,15 @@ function MixCard() {
     timerMinutes,
     setTimerMinutes,
     timerRemaining,
+    saveCurrentMix,
   } = usePlayback();
   const empty = mix.length === 0;
+  // The name being typed for a new saved mix, or null when the save field is closed.
+  const [saveName, setSaveName] = useState<string | null>(null);
+  const finishSave = () => {
+    if (saveName?.trim()) saveCurrentMix(saveName);
+    setSaveName(null);
+  };
   const names = mix.map((sound) => findSoundscape(sound.id)?.title ?? sound.id).join(' + ');
 
   const status = empty
@@ -129,13 +138,47 @@ function MixCard() {
           </ThemedText>
         </View>
         {empty ? null : (
-          <Pressable accessibilityRole="button" accessibilityLabel="Clear mix" onPress={clearMix} style={styles.clear}>
-            <ThemedText type="small" style={{ color: theme.tint }}>
-              Clear
-            </ThemedText>
-          </Pressable>
+          <View style={styles.cardActions}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Save mix"
+              accessibilityHint="Names this mix and keeps it in Your mixes"
+              onPress={() => setSaveName('')}
+              style={styles.clear}>
+              <ThemedText type="small" style={{ color: theme.tint }}>
+                Save
+              </ThemedText>
+            </Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel="Clear mix" onPress={clearMix} style={styles.clear}>
+              <ThemedText type="small" style={{ color: theme.tint }}>
+                Clear
+              </ThemedText>
+            </Pressable>
+          </View>
         )}
       </View>
+
+      {saveName !== null && !empty ? (
+        <View style={styles.saveRow}>
+          <TextInput
+            autoFocus
+            value={saveName}
+            onChangeText={setSaveName}
+            onSubmitEditing={finishSave}
+            placeholder="Name this mix, for example Bedtime"
+            placeholderTextColor={theme.textSecondary}
+            maxLength={MAX_MIX_NAME}
+            returnKeyType="done"
+            accessibilityLabel="Mix name"
+            style={[styles.saveInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
+          />
+          <Pressable accessibilityRole="button" onPress={finishSave} style={styles.clear}>
+            <ThemedText type="small" style={{ color: theme.tint }}>
+              Done
+            </ThemedText>
+          </Pressable>
+        </View>
+      ) : null}
 
       <View style={styles.timer}>
         <ThemedText type="small" themeColor="textSecondary">
@@ -175,6 +218,67 @@ function MixCard() {
         </ThemedText>
       ) : null}
     </ThemedView>
+  );
+}
+
+/** The mixes the user saved. Tap to play or stop one, press and hold to delete it. */
+function YourMixes() {
+  const { library } = usePlayback();
+  if (library.length === 0) return null;
+  return (
+    <View style={styles.section}>
+      <ThemedText style={styles.sectionTitle} accessibilityRole="header">
+        Your mixes
+      </ThemedText>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.presets}>
+        {library.map((named) => (
+          <NamedMixCard key={named.id} named={named} />
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
+
+function NamedMixCard({ named }: { named: NamedMix }) {
+  const theme = useTheme();
+  const { mix, mixPlaying, playNamedMix, toggleMix, deleteNamedMix } = usePlayback();
+  const playing =
+    mixPlaying &&
+    mix.length === named.sounds.length &&
+    named.sounds.every((sound) => mix.some((entry) => entry.id === sound.id));
+  const names = named.sounds.map((sound) => findSoundscape(sound.id)?.title ?? sound.id).join(' + ');
+  const confirmDelete = () =>
+    Alert.alert(`Delete "${named.name}"?`, 'The sounds stay in the app. Only this saved mix is removed.', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Delete', style: 'destructive', onPress: () => deleteNamedMix(named.id) },
+    ]);
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ selected: playing }}
+      accessibilityLabel={`${named.name}. ${names}`}
+      accessibilityHint={playing ? 'Stops this mix' : 'Plays this mix. Press and hold to delete it.'}
+      accessibilityActions={[{ name: 'longpress', label: 'Delete' }]}
+      onAccessibilityAction={confirmDelete}
+      onPress={() => (playing ? toggleMix() : playNamedMix(named.id))}
+      onLongPress={confirmDelete}
+      style={({ pressed }) => [
+        styles.preset,
+        { backgroundColor: playing ? theme.tint : theme.backgroundElement, transform: [{ scale: pressed ? 0.97 : 1 }] },
+      ]}>
+      <View style={styles.presetIcons}>
+        {named.sounds.map((sound) => (
+          <SoundIcon key={sound.id} id={sound.id} color={playing ? theme.onTint : theme.tint} size={24} />
+        ))}
+      </View>
+      <ThemedText numberOfLines={1} style={[styles.tileTitle, { color: playing ? theme.onTint : theme.text }]}>
+        {named.name}
+      </ThemedText>
+      <ThemedText type="small" numberOfLines={2} style={{ color: playing ? theme.onTint : theme.textSecondary }}>
+        {names}
+      </ThemedText>
+    </Pressable>
   );
 }
 
@@ -324,6 +428,23 @@ const styles = StyleSheet.create({
     fontFamily: DisplayFont.bold,
     fontWeight: 'normal',
     letterSpacing: -0.2,
+  },
+  cardActions: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  saveRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+  },
+  saveInput: {
+    flex: 1,
+    minHeight: 44,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: Spacing.three,
+    fontSize: 16,
   },
   clear: {
     minHeight: 44,

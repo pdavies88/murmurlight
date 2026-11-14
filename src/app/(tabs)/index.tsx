@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,6 +11,7 @@ import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constan
 import { CATEGORIES, type Meditation } from '@/content/catalog';
 import { usePlayback } from '@/context/playback-context';
 import { useTheme } from '@/hooks/use-theme';
+import { REMINDER_TIMES, formatReminder } from '@/lib/mix';
 
 export default function MeditateScreen() {
   const theme = useTheme();
@@ -42,6 +43,7 @@ export default function MeditateScreen() {
             { paddingLeft: Spacing.four + insets.left, paddingRight: Spacing.four + insets.right },
           ]}>
           <WindDownCard />
+          <BedtimeReminder />
           {CATEGORIES.map((category) => (
             <View key={category.id} style={styles.category}>
               <View style={styles.categoryHeader}>
@@ -89,6 +91,58 @@ function WindDownCard() {
         </View>
       )}
     </Pressable>
+  );
+}
+
+/** An optional daily notification at bedtime. It asks for notification permission only when turned on. */
+function BedtimeReminder() {
+  const theme = useTheme();
+  const { reminderMinutes, setReminder } = usePlayback();
+  const choose = async (minutes: number | null) => {
+    const ok = await setReminder(minutes);
+    if (!ok && minutes !== null) {
+      Alert.alert(
+        'Notifications are off',
+        'To get a bedtime reminder, allow notifications for this app in Settings.',
+        [
+          { text: 'Not now', style: 'cancel' },
+          { text: 'Open Settings', onPress: () => void Linking.openSettings() },
+        ],
+      );
+    }
+  };
+  const options: (number | null)[] = [null, ...REMINDER_TIMES];
+
+  return (
+    <ThemedView type="backgroundElement" style={styles.reminder}>
+      <View style={styles.rowText}>
+        <ThemedText style={styles.rowTitle}>Bedtime reminder</ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          {reminderMinutes === null
+            ? 'A gentle nudge each night to wind down. Off until you choose a time.'
+            : `Every night at ${formatReminder(reminderMinutes)}.`}
+        </ThemedText>
+      </View>
+      <View style={styles.reminderChips} accessibilityRole="radiogroup">
+        {options.map((minutes) => {
+          const selected = minutes === reminderMinutes;
+          const label = minutes === null ? 'Off' : formatReminder(minutes).replace(' PM', '');
+          return (
+            <Pressable
+              key={minutes ?? 'off'}
+              accessibilityRole="radio"
+              accessibilityState={{ selected }}
+              accessibilityLabel={minutes === null ? 'No bedtime reminder' : `Bedtime reminder at ${formatReminder(minutes)}`}
+              onPress={() => void choose(minutes)}
+              style={[styles.reminderChip, { backgroundColor: selected ? theme.tint : theme.backgroundSelected }]}>
+              <ThemedText type="small" style={[styles.reminderChipLabel, { color: selected ? theme.onTint : theme.text }]}>
+                {label}
+              </ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+    </ThemedView>
   );
 }
 
@@ -169,6 +223,28 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     padding: Spacing.three - Spacing.one,
     borderRadius: 20,
+  },
+  reminder: {
+    padding: Spacing.three,
+    borderRadius: 24,
+    gap: Spacing.three,
+  },
+  reminderChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.two,
+  },
+  reminderChip: {
+    minHeight: 44,
+    minWidth: 52,
+    paddingHorizontal: Spacing.three,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  reminderChipLabel: {
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
   },
   windDown: {
     flexDirection: 'row',

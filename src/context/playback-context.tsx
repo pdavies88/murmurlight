@@ -14,13 +14,17 @@ import {
   MAX_MIX_SOUNDS,
   driftFactor,
   fadeGain,
+  saveNamedMix,
   setVolumeInMix,
   toggleInMix,
   type MixSound,
+  type NamedMix,
 } from '@/lib/mix';
 import { loadArtwork, setRemoteChangeHandler, syncMixPlayers } from '@/lib/mix-engine';
 import { loadSavedMix, saveMix } from '@/lib/saved-mix';
 import { hideSleepTimer, showSleepTimer } from '@/lib/sleep-activity';
+import { setBedtimeReminder } from '@/lib/bedtime-reminder';
+import { updateMixesWidget } from '@/lib/mixes-widget';
 import type { SleepTimerActivityProps } from '@/widgets/sleep-timer-activity';
 import { clampPosition } from '@/lib/time';
 
@@ -58,6 +62,17 @@ type PlaybackContextValue = {
   playPreset: (sounds: MixSound[]) => void;
   /** Replaces the mix without playing it. */
   setMixSounds: (sounds: MixSound[]) => void;
+  /** Mixes the user named and saved, newest first. */
+  library: NamedMix[];
+  /** Saves the current mix under a name. */
+  saveCurrentMix: (name: string) => void;
+  deleteNamedMix: (id: string) => void;
+  /** Plays a saved mix by id, or the current mix for any unknown id. Used by the widget's links. */
+  playNamedMix: (id: string) => void;
+  /** The daily bedtime reminder, in minutes after midnight, or null for none. */
+  reminderMinutes: number | null;
+  /** Turns the reminder on at a time, or off with null. Resolves false if notifications aren't allowed. */
+  setReminder: (minutes: number | null) => Promise<boolean>;
   toggleMix: () => void;
   /** Plays the mix, with the sleep timer if one is chosen. */
   playMix: () => void;
@@ -115,6 +130,8 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
   const [mix, setMix] = useState<MixSound[]>(saved.sounds);
   const [mixPlaying, setMixPlaying] = useState(false);
   const [drift, setDrift] = useState(saved.drift);
+  const [library, setLibrary] = useState<NamedMix[]>(saved.library);
+  const [reminderMinutes, setReminderMinutes] = useState<number | null>(saved.reminderMinutes);
   const [driftSeconds, setDriftSeconds] = useState(0);
   const [timerMinutes, setTimerMinutesState] = useState<number | null>(saved.timerMinutes);
   const [timerStartedAt, setTimerStartedAt] = useState<number | null>(null);
@@ -250,9 +267,17 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
   }, [mixPlaying, timerStartedAt, timerEndsAt, mixTitles, plannedSleepTimer]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => saveMix({ sounds: mix, timerMinutes, drift }), SAVE_DELAY_MS);
+    const timeout = setTimeout(
+      () => saveMix({ sounds: mix, timerMinutes, drift, library, reminderMinutes }),
+      SAVE_DELAY_MS,
+    );
     return () => clearTimeout(timeout);
-  }, [mix, timerMinutes, drift]);
+  }, [mix, timerMinutes, drift, library, reminderMinutes]);
+
+  // The home screen widget lists the saved mixes, and the current mix when nothing is saved.
+  useEffect(() => {
+    updateMixesWidget(library, mix);
+  }, [library, mix]);
 
   const value: PlaybackContextValue = {
     track,
@@ -312,6 +337,26 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
       beginMix(sounds);
     },
     setMixSounds: setMix,
+    library,
+    saveCurrentMix: (name) => {
+      setLibrary(saveNamedMix(library, name, mix, Date.now().toString(36)));
+    },
+    deleteNamedMix: (id) => setLibrary(library.filter((entry) => entry.id !== id)),
+    reminderMinutes,
+    setReminder: async (minutes) => {
+      const ok = await setBedtimeReminder(minutes).catch(() => false);
+      setReminderMinutes(ok ? minutes : null);
+      return ok;
+    },
+    playNamedMix: (id) => {
+      const named = library.find((entry) => entry.id === id);
+      if (named) {
+        setMix(named.sounds);
+        beginMix(named.sounds);
+      } else {
+        beginMix();
+      }
+    },
     toggleMix: () => {
       if (mixPlaying) haltMix();
       else beginMix();

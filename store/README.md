@@ -74,6 +74,10 @@ Relaxation Station is now Murmurlight, with new ways to wind down. Everything is
 - Sleep timer: 15 to 60 minutes, with a one-minute fade-out. It counts down on your Lock Screen and in the Dynamic Island.
 - Breathe: a pacer that grows and shrinks with your breath, with a soft tone and a tap at each change so you can close your eyes.
 - Wind down: one tap runs two minutes of breathing, a sleep meditation, then your mix with the sleep timer.
+- Your mixes: name and save as many mixes as you like, up to 12.
+- Home screen widget: start a saved mix with one tap.
+- Bedtime reminder: an optional gentle nudge each night.
+- A new look and a new icon.
 - Optimized for iPhone Duo, and every iPhone now turns sideways.
 ```
 
@@ -83,7 +87,7 @@ Relaxation Station is now Murmurlight, with new ways to wind down. Everything is
 Murmurlight is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
 
 YOUR OWN SOUND MIX
-Layer up to 4 of 19 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride, Gentle Shush, Om Drone, Singing Bowls, Summer Night and Gentle Stream. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Murmurlight saves your mix, so it's one tap away tomorrow night. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation or Nap time.
+Layer up to 4 of 19 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride, Gentle Shush, Om Drone, Singing Bowls, Summer Night and Gentle Stream. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Name and save your favorite mixes, and start one from the home screen widget. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation or Nap time.
 
 BINAURAL BEATS
 Delta (2 Hz), Theta (6 Hz) and Alpha (10 Hz). With headphones, each ear hears a slightly different tone, and together they make a slow pulse. Layer them under any sound.
@@ -92,7 +96,7 @@ A SLEEP TIMER THAT FADES OUT
 Choose 15, 30, 45 or 60 minutes. Your mix fades out over the last minute instead of stopping with a jolt. The countdown shows on your Lock Screen and in the Dynamic Island.
 
 WIND DOWN IN ONE TAP
-Two minutes of slow breathing, a guided sleep meditation, then your mix with the sleep timer. Lock your phone after the first step and let the rest play.
+Two minutes of slow breathing, a guided sleep meditation, then your mix with the sleep timer. Lock your phone after the first step and let the rest play. Turn on the bedtime reminder for a gentle nudge each night.
 
 BREATHE
 Follow an orb that grows as you breathe in and shrinks as you breathe out. Choose Box (4-4-4-4), Long exhale (4-7-8) or Even (5-5). A soft tone and a gentle tap mark each change, so it works with your eyes closed.
@@ -159,6 +163,8 @@ Thank you for the review. We agreed that 1.2.1 looked like other meditation and 
 - Drift: each sound's volume slowly rises and falls on its own wave, so the mix never repeats like a loop.
 - Sleep timer with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
 - Breathe tab: a breathing pacer with three patterns, and soft tones and haptic taps at each change, usable with eyes closed.
+- Named saved mixes (up to 12) and a home screen widget that starts a saved mix with one tap.
+- Optional bedtime reminder: a local daily notification. Permission is asked only when the user picks a time, and the app works fully without it. No server.
 - Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
 - Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
 
@@ -178,13 +184,15 @@ c. Tap a ready-made mix, such as Rainy cabin, to replace the mix.
 d. Breathe tab: choose Box and tap Start breathing. The orb grows and shrinks, with a haptic tap at each change.
 e. Meditate tab: tap Wind down, then Start wind-down. Tap Skip to the meditation and Skip to the mix to see all three steps quickly.
 f. Meditate tab: tap any meditation, for example Settle In, to open the player.
-g. About tab: links to the privacy policy and support page.
+g. Sounds tab: tap Save on the mix card, name the mix, and it appears under Your mixes. Add the Murmurlight widget from the home screen to start it with one tap.
+h. Meditate tab: choose a Bedtime reminder time. The app asks for notification permission at that moment.
+i. About tab: links to the privacy policy and support page.
 
 BACKGROUND AUDIO
 The "audio" background mode keeps the mix and meditations playing with the screen locked. That is the app's core purpose: users fall asleep to their mix.
 
 4. EXTERNAL SERVICES
-None. No backend, network requests, accounts, payments, analytics, ads or AI services.
+None: no backend, network, accounts, payments, analytics, ads or AI.
 
 5. REGIONAL DIFFERENCES
 None.

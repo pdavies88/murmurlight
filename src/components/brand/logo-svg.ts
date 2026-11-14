@@ -1,6 +1,6 @@
 /**
- * The Murmurlight mark: a softly glowing orb inside two quiet ripples, like one slow breath,
- * on a deep violet gradient.
+ * The Murmurlight mark: a warm crescent moon (the light) with three soft sound arcs flowing from
+ * it (the murmur), on a deep dusk gradient.
  *
  * This file is the single source for the logo. The app renders it with `SvgXml`, and
  * `scripts/generate-brand-assets.mjs` renders the same markup to the app icon and splash PNGs.
@@ -16,30 +16,39 @@ export type LogoSvgOptions = {
 
 export function buildLogoSvg({ cornerRadius = 16, withBackground = true }: LogoSvgOptions = {}): string {
   const background = withBackground
-    ? `<linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#1C1650"/>
-      <stop offset="0.6" stop-color="#3B2F9E"/>
-      <stop offset="1" stop-color="#6A55E0"/>
+    ? `<linearGradient id="mm-tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0E1033"/>
+      <stop offset="0.55" stop-color="#2A2470"/>
+      <stop offset="1" stop-color="#5B3FB8"/>
     </linearGradient>`
     : '';
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     ${background}
-    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#C9BFFF" stop-opacity="0.6"/>
-      <stop offset="1" stop-color="#C9BFFF" stop-opacity="0"/>
+    <radialGradient id="mm-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFD9A8" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFD9A8" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="orb" cx="0.38" cy="0.32" r="0.8">
-      <stop offset="0" stop-color="#FFFFFF"/>
-      <stop offset="0.45" stop-color="#E4DEFF"/>
-      <stop offset="1" stop-color="#A99CFF"/>
-    </radialGradient>
+    <linearGradient id="mm-moon" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FFF4E0"/>
+      <stop offset="1" stop-color="#FFB98A"/>
+    </linearGradient>
+    <mask id="mm-crescent">
+      <rect width="64" height="64" fill="#000"/>
+      <circle cx="25" cy="32" r="13" fill="#fff"/>
+      <circle cx="31.5" cy="27" r="11.5" fill="#000"/>
+    </mask>
   </defs>
-  ${withBackground ? `<rect width="64" height="64" rx="${cornerRadius}" fill="url(#tile)"/>` : ''}
-  <circle cx="32" cy="32" r="24" fill="url(#glow)"/>
-  <circle cx="32" cy="32" r="21" fill="none" stroke="#E4DEFF" stroke-opacity="0.22" stroke-width="1.2"/>
-  <circle cx="32" cy="32" r="15.5" fill="none" stroke="#E4DEFF" stroke-opacity="0.45" stroke-width="1.2"/>
-  <circle cx="32" cy="32" r="10" fill="url(#orb)"/>
+  ${withBackground ? `<rect width="64" height="64" rx="${cornerRadius}" fill="url(#mm-tile)"/>` : ''}
+  <circle cx="25" cy="32" r="20" fill="url(#mm-glow)"/>
+  <rect width="64" height="64" fill="url(#mm-moon)" mask="url(#mm-crescent)"/>
+  <g fill="none" stroke="#D9D0FF" stroke-linecap="round" stroke-width="2.4">
+    <path d="M39.6 19.8 A19 19 0 0 1 39.6 44.2" stroke-opacity="0.9"/>
+    <path d="M43.4 16.6 A24 24 0 0 1 43.4 47.4" stroke-opacity="0.6"/>
+    <path d="M47.2 13.4 A29 29 0 0 1 47.2 50.6" stroke-opacity="0.32"/>
+  </g>
+  <circle cx="44" cy="10" r="0.9" fill="#FFF4E0" fill-opacity="0.8"/>
+  <circle cx="13" cy="15" r="0.7" fill="#FFF4E0" fill-opacity="0.6"/>
 </svg>`;
 }

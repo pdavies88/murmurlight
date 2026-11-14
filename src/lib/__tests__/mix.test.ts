@@ -7,8 +7,11 @@ import {
   DRIFT_FLOOR,
   FADE_SECONDS,
   MAX_MIX_SOUNDS,
+  MAX_NAMED_MIXES,
   driftFactor,
   fadeGain,
+  formatReminder,
+  saveNamedMix,
   parseSavedMix,
   setVolumeInMix,
   toggleInMix,
@@ -65,6 +68,8 @@ describe('parseSavedMix', () => {
       sounds: [{ id: 'rain', volume: 0.4 }],
       timerMinutes: 30,
       drift: false,
+      library: [],
+      reminderMinutes: null,
     });
     expect(parseSavedMix(JSON.stringify({ sounds: [], drift: true }), KNOWN).drift).toBe(true);
   });
@@ -97,6 +102,56 @@ describe('parseSavedMix', () => {
       { id: 'fan', volume: 0.3 },
     ]);
     expect(saved.timerMinutes).toBeNull();
+  });
+});
+
+describe('bedtime reminder', () => {
+  it('formats the time and keeps only the offered times', () => {
+    expect(formatReminder(21 * 60)).toBe('9:00 PM');
+    expect(formatReminder(22 * 60 + 30)).toBe('10:30 PM');
+    expect(parseSavedMix(JSON.stringify({ reminderMinutes: 22 * 60 }), KNOWN).reminderMinutes).toBe(22 * 60);
+    expect(parseSavedMix(JSON.stringify({ reminderMinutes: 61 }), KNOWN).reminderMinutes).toBeNull();
+  });
+});
+
+describe('named mixes', () => {
+  const rain = [{ id: 'rain', volume: 0.5 }];
+  const fire = [{ id: 'fire', volume: 0.6 }];
+
+  it('saves at the front, trims the name and replaces one with the same name', () => {
+    let library = saveNamedMix([], '  Bedtime  ', rain, 'a');
+    library = saveNamedMix(library, 'Focus', fire, 'b');
+    expect(library.map((mix) => mix.name)).toEqual(['Focus', 'Bedtime']);
+    library = saveNamedMix(library, 'bedtime', fire, 'c');
+    expect(library.map((mix) => [mix.id, mix.name])).toEqual([
+      ['c', 'bedtime'],
+      ['b', 'Focus'],
+    ]);
+  });
+
+  it('ignores empty names and empty mixes, and keeps at most the limit', () => {
+    expect(saveNamedMix([], '   ', rain, 'a')).toEqual([]);
+    expect(saveNamedMix([], 'Empty', [], 'a')).toEqual([]);
+    let library = saveNamedMix([], 'Mix 0', rain, '0');
+    for (let i = 1; i <= MAX_NAMED_MIXES; i++) library = saveNamedMix(library, `Mix ${i}`, rain, `${i}`);
+    expect(library).toHaveLength(MAX_NAMED_MIXES);
+    expect(library.some((mix) => mix.name === 'Mix 0')).toBe(false);
+  });
+
+  it('reads a saved library and drops broken entries', () => {
+    const text = JSON.stringify({
+      sounds: [],
+      library: [
+        { id: 'a', name: 'Bedtime', sounds: [{ id: 'rain', volume: 0.5 }] },
+        { id: 'a', name: 'Duplicate id', sounds: [{ id: 'rain', volume: 0.5 }] },
+        { id: 'b', name: '', sounds: [{ id: 'rain', volume: 0.5 }] },
+        { id: 'c', name: 'Only unknown sounds', sounds: [{ id: 'gone', volume: 0.5 }] },
+        'junk',
+      ],
+    });
+    expect(parseSavedMix(text, KNOWN).library).toEqual([
+      { id: 'a', name: 'Bedtime', sounds: [{ id: 'rain', volume: 0.5 }] },
+    ]);
   });
 });
 

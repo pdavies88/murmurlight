@@ -53,13 +53,73 @@ export function driftFactor(seconds: number, index: number): number {
   return DRIFT_FLOOR + (1 - DRIFT_FLOOR) * wave;
 }
 
+/** A mix the user named and saved, so it's one tap away later. */
+export type NamedMix = {
+  id: string;
+  name: string;
+  sounds: MixSound[];
+};
+
+/** The most named mixes the app keeps. */
+export const MAX_NAMED_MIXES = 12;
+/** Longer names are cut to this length. It fits on a widget row. */
+export const MAX_MIX_NAME = 30;
+
+/** Bedtime reminder choices, in minutes after midnight: 9:00 to 11:00 PM. */
+export const REMINDER_TIMES = [21 * 60, 21 * 60 + 30, 22 * 60, 22 * 60 + 30, 23 * 60] as const;
+
 export type SavedMix = {
   sounds: MixSound[];
   timerMinutes: number | null;
   drift: boolean;
+  library: NamedMix[];
+  /** The daily bedtime reminder, in minutes after midnight, or null for none. */
+  reminderMinutes: number | null;
 };
 
-export const EMPTY_SAVED_MIX: SavedMix = { sounds: [], timerMinutes: null, drift: false };
+export const EMPTY_SAVED_MIX: SavedMix = {
+  sounds: [],
+  timerMinutes: null,
+  drift: false,
+  library: [],
+  reminderMinutes: null,
+};
+
+/** Formats minutes after midnight as a 12-hour time, for example 1290 → "9:30 PM". */
+export function formatReminder(minutes: number): string {
+  const hour = Math.floor(minutes / 60);
+  const minute = String(minutes % 60).padStart(2, '0');
+  return `${((hour + 11) % 12) + 1}:${minute} ${hour < 12 ? 'AM' : 'PM'}`;
+}
+
+export function cleanMixName(name: string): string {
+  return name.replace(/\s+/g, ' ').trim().slice(0, MAX_MIX_NAME).trim();
+}
+
+/**
+ * Saves the sounds under a name, at the front of the library. A mix with the same name is
+ * replaced, so saving "Bedtime" twice keeps one. The oldest mix drops off when the library is full.
+ */
+export function saveNamedMix(library: NamedMix[], name: string, sounds: MixSound[], id: string): NamedMix[] {
+  const clean = cleanMixName(name);
+  if (!clean || sounds.length === 0) return library;
+  const others = library.filter((mix) => mix.name.toLowerCase() !== clean.toLowerCase());
+  return [{ id, name: clean, sounds }, ...others].slice(0, MAX_NAMED_MIXES);
+}
+
+function parseSounds(sounds: unknown, knownIds: readonly string[]): MixSound[] {
+  const seen = new Set<string>();
+  const valid: MixSound[] = [];
+  for (const entry of Array.isArray(sounds) ? sounds : []) {
+    if (typeof entry !== 'object' || entry === null) continue;
+    const { id, volume } = entry as { id?: unknown; volume?: unknown };
+    if (typeof id !== 'string' || !knownIds.includes(id) || seen.has(id)) continue;
+    if (valid.length >= MAX_MIX_SOUNDS) break;
+    seen.add(id);
+    valid.push({ id, volume: clampVolume(typeof volume === 'number' ? volume : DEFAULT_MIX_VOLUME) });
+  }
+  return valid;
+}
 
 /**
  * Reads a saved mix from its JSON text. Anything unreadable, unknown or out of range is dropped,
@@ -73,21 +133,37 @@ export function parseSavedMix(text: string, knownIds: readonly string[]): SavedM
     return EMPTY_SAVED_MIX;
   }
   if (typeof data !== 'object' || data === null) return EMPTY_SAVED_MIX;
-  const { sounds, timerMinutes, drift } = data as { sounds?: unknown; timerMinutes?: unknown; drift?: unknown };
-
-  const seen = new Set<string>();
-  const validSounds: MixSound[] = [];
-  for (const entry of Array.isArray(sounds) ? sounds : []) {
-    if (typeof entry !== 'object' || entry === null) continue;
-    const { id, volume } = entry as { id?: unknown; volume?: unknown };
-    if (typeof id !== 'string' || !knownIds.includes(id) || seen.has(id)) continue;
-    if (validSounds.length >= MAX_MIX_SOUNDS) break;
-    seen.add(id);
-    validSounds.push({ id, volume: clampVolume(typeof volume === 'number' ? volume : DEFAULT_MIX_VOLUME) });
-  }
+  const { sounds, timerMinutes, drift, library, reminderMinutes } = data as {
+    sounds?: unknown;
+    timerMinutes?: unknown;
+    drift?: unknown;
+    library?: unknown;
+    reminderMinutes?: unknown;
+  };
 
   const validTimer = (TIMER_MINUTES as readonly number[]).includes(timerMinutes as number)
     ? (timerMinutes as number)
     : null;
-  return { sounds: validSounds, timerMinutes: validTimer, drift: drift === true };
+
+  const validLibrary: NamedMix[] = [];
+  for (const entry of Array.isArray(library) ? library : []) {
+    if (typeof entry !== 'object' || entry === null) continue;
+    const { id, name, sounds: mixSounds } = entry as { id?: unknown; name?: unknown; sounds?: unknown };
+    const clean = typeof name === 'string' ? cleanMixName(name) : '';
+    const parsed = parseSounds(mixSounds, knownIds);
+    if (typeof id !== 'string' || !clean || parsed.length === 0) continue;
+    if (validLibrary.some((mix) => mix.id === id)) continue;
+    validLibrary.push({ id, name: clean, sounds: parsed });
+    if (validLibrary.length >= MAX_NAMED_MIXES) break;
+  }
+
+  return {
+    sounds: parseSounds(sounds, knownIds),
+    timerMinutes: validTimer,
+    drift: drift === true,
+    library: validLibrary,
+    reminderMinutes: (REMINDER_TIMES as readonly number[]).includes(reminderMinutes as number)
+      ? (reminderMinutes as number)
+      : null,
+  };
 }
