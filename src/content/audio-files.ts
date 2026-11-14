@@ -37,8 +37,13 @@ export const SOUNDSCAPE_AUDIO: Record<string, number> = {
   'alpha': require('../../assets/audio/sounds/alpha.m4a'),
   'om': require('../../assets/audio/sounds/om.m4a'),
   'bowls': require('../../assets/audio/sounds/bowls.m4a'),
-  'crickets': require('../../assets/audio/sounds/crickets.m4a'),
-  'stream': require('../../assets/audio/sounds/stream.m4a'),
+  'white-noise': require('../../assets/audio/sounds/white-noise.m4a'),
+  'green-noise': require('../../assets/audio/sounds/green-noise.m4a'),
+  'birdsong': require('../../assets/audio/sounds/birdsong.m4a'),
+  'leaves': require('../../assets/audio/sounds/leaves.m4a'),
+  'chords': require('../../assets/audio/sounds/chords.m4a'),
+  'flute': require('../../assets/audio/sounds/flute.m4a'),
+  'piano': require('../../assets/audio/sounds/piano.m4a'),
 };
 
 export const CUE_AUDIO: Record<string, number> = {

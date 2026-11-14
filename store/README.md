@@ -66,10 +66,10 @@ Mix sleep sounds and binaural beats, breathe with a guided pacer and drift off w
 ```
 Relaxation Station is now Murmurlight, with new ways to wind down. Everything is still free.
 
-- 7 new sounds: Delta, Theta and Alpha binaural beats, Om Drone, Singing Bowls, Summer Night and Gentle Stream.
+- 12 new sounds: Birdsong, Rustling Leaves, White Noise, Green Noise, Calm Chords, Pan Flute, Soft Piano, Om Drone, Singing Bowls, and Delta, Theta and Alpha binaural beats.
 
 - Sound mixer: layer up to 4 sounds and set the volume of each. Your mix is saved on your phone.
-- Ready-made mixes: Rainy cabin, Night shore, Deep focus, Deep meditation and Nap time.
+- Ready-made mixes: Rainy cabin, Night shore, Deep focus, Deep meditation, Forest morning and Nap time.
 - Drift: each sound slowly rises and falls, so your mix never sounds like a loop.
 - Sleep timer: 15 to 60 minutes, with a one-minute fade-out. It counts down on your Lock Screen and in the Dynamic Island.
 - Breathe: a pacer that grows and shrinks with your breath, with a soft tone and a tap at each change so you can close your eyes.
@@ -87,7 +87,7 @@ Relaxation Station is now Murmurlight, with new ways to wind down. Everything is
 Murmurlight is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
 
 YOUR OWN SOUND MIX
-Layer up to 4 of 19 sounds and set each volume: Gentle Rain, Wind Chimes, Ocean Waves, Music Box Lullaby, Heartbeat, Crackling Fire, Guitar Lullaby, Box Fan, Brown Noise, Relaxing Bells, Car Ride, Gentle Shush, Om Drone, Singing Bowls, Summer Night and Gentle Stream. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Name and save your favorite mixes, and start one from the home screen widget. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation or Nap time.
+Layer up to 4 of 24 sounds and set each volume: Gentle Rain, Ocean Waves, Crackling Fire, Birdsong, Rustling Leaves, Wind Chimes, White Noise, Brown Noise, Green Noise, Box Fan, Car Ride, Heartbeat, Gentle Shush, Calm Chords, Pan Flute, Soft Piano, Guitar Lullaby, Music Box Lullaby, Relaxing Bells, Om Drone, Singing Bowls, and three binaural beats. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Name and save your favorite mixes, and start one from the home screen widget. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation, Forest morning or Nap time.
 
 BINAURAL BEATS
 Delta (2 Hz), Theta (6 Hz) and Alpha (10 Hz). With headphones, each ear hears a slightly different tone, and together they make a slow pulse. Layer them under any sound.
@@ -158,7 +158,7 @@ Version 2.0 replies to the guideline 4.3(a) rejection of 1.2.1. Record the scree
 ```
 RESPONSE TO THE 4.3(a) REJECTION OF 1.2.1
 Thank you for the review. We agreed that 1.2.1 looked like other meditation and sound apps, so 2.0 adds features built for this app and a new, unique name (Murmurlight, formerly Relaxation Station):
-- Sound mixer: layer up to 4 of 19 sounds with a volume for each, saved on the device. Five ready-made mixes.
+- Sound mixer: layer up to 4 of 24 sounds with a volume for each, saved on the device. Six ready-made mixes.
 - Binaural beats: Delta, Theta and Alpha, generated for this app as stereo tone pairs. No health claims are made.
 - Drift: each sound's volume slowly rises and falls on its own wave, so the mix never repeats like a loop.
 - Sleep timer with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
@@ -168,7 +168,7 @@ Thank you for the review. We agreed that 1.2.1 looked like other meditation and 
 - Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
 - Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
 
-This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 19 sounds were synthesized for it. The developer has no other meditation or sound apps.
+This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 24 sounds were synthesized for it. The developer has no other meditation or sound apps.
 
 1. SCREEN RECORDING
 Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the Breathe tab, the wind-down routine with the screen locked, and the About tab. The app has no login, user-generated content or in-app purchases.

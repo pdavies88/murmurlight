@@ -127,19 +127,56 @@ export function SoundIcon({ id, color, size = 32 }: { id: string; color: string;
             <Path d="M13 10q3-2 6 0" />
           </G>
         );
-      case 'crickets':
+      case 'white-noise':
         return (
           <G {...stroke}>
-            <Path d="M22 6a8 8 0 1 0 4 12 9 9 0 0 1-4-12z" />
-            <Path d="M5 9l1.5 1.5M9 5l.5 2M4 14h2" />
+            <Path d="M5 9v14M9 7v18M13 9v14M17 7v18M21 9v14M25 7v18M29 9v14" />
           </G>
         );
-      case 'stream':
+      case 'green-noise':
         return (
           <G {...stroke}>
-            <Path d="M4 11q4-3 8 0t8 0 8 0" />
-            <Path d="M4 17q4-3 8 0t8 0 8 0" />
-            <Path d="M4 23q4-3 8 0t8 0 8 0" />
+            <Path d="M5 15v2M9 12v8M13 8v16M17 6v20M21 8v16M25 12v8M29 15v2" />
+          </G>
+        );
+      case 'birdsong':
+        return (
+          <G {...stroke}>
+            <Path d="M4 14c4 10 16 13 20 2 2-5-1-9-4.5-8.5-3.5.5-4.5 3.5-5 6.5-3 2-7 2-10.5 0z" />
+            <Path d="M24 11l4 1-4 1.5" />
+            <Path d="M10 17.5c3 3 7 3 9 0" />
+            <Circle cx={20.5} cy={11} r={0.9} />
+          </G>
+        );
+      case 'leaves':
+        return (
+          <G {...stroke}>
+            <Path d="M6 26C6 14 14 6 26 6c0 12-8 20-20 20z" />
+            <Path d="M6 26L19 13M12 20h5M15 17v-5" />
+          </G>
+        );
+      case 'chords':
+        return (
+          <G {...stroke}>
+            <Path d="M17 26V3l6 3" />
+            <Path d="M11 26a3 2 -20 1 0 6 0a3 2 -20 1 0 -6 0" />
+            <Path d="M11 18.5a3 2 -20 1 0 6 0a3 2 -20 1 0 -6 0" />
+            <Path d="M11 11a3 2 -20 1 0 6 0a3 2 -20 1 0 -6 0" />
+          </G>
+        );
+      case 'flute':
+        return (
+          <G {...stroke}>
+            <Path d="M6 6v20M11 6v17M16 6v14M21 6v11M26 6v8" strokeWidth={3.2} />
+            <Path d="M4 10h24" />
+          </G>
+        );
+      case 'piano':
+        return (
+          <G {...stroke}>
+            <Rect x={4} y={7} width={24} height={18} rx={2} />
+            <Path d="M10 18v7M16 18v7M22 18v7" />
+            <Path d="M10 7v11M16 7v11M22 7v11" strokeWidth={4} />
           </G>
         );
       default:

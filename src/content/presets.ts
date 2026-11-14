@@ -46,6 +46,15 @@ export const MIX_PRESETS: MixPreset[] = [
     ],
   },
   {
+    id: 'forest-morning',
+    title: 'Forest morning',
+    description: 'Birdsong and leaves moving in the wind.',
+    sounds: [
+      { id: 'birdsong', volume: 0.6 },
+      { id: 'leaves', volume: 0.5 },
+    ],
+  },
+  {
     id: 'nap-time',
     title: 'Nap time',
     description: 'A car ride, gentle shushing and a slow heartbeat.',

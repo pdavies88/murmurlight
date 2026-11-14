@@ -216,14 +216,39 @@
       "description": "Bowls struck one at a time and left to ring."
     },
     {
-      "id": "crickets",
-      "title": "Summer Night",
-      "description": "Crickets near and far over a soft breeze."
+      "id": "white-noise",
+      "title": "White Noise",
+      "description": "Even, steady hiss that covers sudden sounds."
     },
     {
-      "id": "stream",
-      "title": "Gentle Stream",
-      "description": "Water rushing and bubbling over stones."
+      "id": "green-noise",
+      "title": "Green Noise",
+      "description": "Soft midrange noise, like distant flowing water."
+    },
+    {
+      "id": "birdsong",
+      "title": "Birdsong",
+      "description": "A few birds singing near and far on a still morning."
+    },
+    {
+      "id": "leaves",
+      "title": "Rustling Leaves",
+      "description": "Wind moving through the leaves of a tall tree."
+    },
+    {
+      "id": "chords",
+      "title": "Calm Chords",
+      "description": "Slow, open chords that swell and fade into each other."
+    },
+    {
+      "id": "flute",
+      "title": "Pan Flute",
+      "description": "A pan flute playing slow, simple phrases."
+    },
+    {
+      "id": "piano",
+      "title": "Soft Piano",
+      "description": "Quiet felt piano, a few notes at a time."
     }
   ]
 }

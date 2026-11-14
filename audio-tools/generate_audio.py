@@ -726,49 +726,244 @@ def sound_bowls(rng, n):
     return np.stack([left, right], axis=1)
 
 
-def cricket_chirp(freq: float) -> np.ndarray:
-    """One chirp: three quick pulses of a high tone."""
-    pulse_n = int(SR * 0.018)
-    gap_n = int(SR * 0.012)
-    t = np.arange(pulse_n) / SR
-    pulse = np.sin(2 * np.pi * freq * t) * np.sin(np.pi * np.arange(pulse_n) / pulse_n) ** 2
-    out = np.zeros(3 * (pulse_n + gap_n))
-    for i in range(3):
-        out[i * (pulse_n + gap_n): i * (pulse_n + gap_n) + pulse_n] = pulse
-    return out
+def sound_white_noise(rng, n):
+    """Even white noise with the harshest top end rounded off, so it hisses less."""
+    return stereo(rng, lambda r, k: lowpass(white(r, k), 9000, 1), n, 0.8)
 
 
-def sound_crickets(rng, n):
-    """A summer night: a few crickets near and far over a soft breeze."""
+def sound_green_noise(rng, n):
+    """Green noise: the middle of the spectrum, around 500 Hz, with the deep rumble and the hiss
+    rolled away. It sounds like distant, steady water."""
+    return stereo(rng, lambda r, k: bandpass(pink(r, k), 180, 1800, 1), n, 0.7)
+
+
+def bird_note(rng, seconds: float, f0: float, f1: float, bend: float = 0.0, warble: float = 0.0,
+              warble_rate: float = 40.0) -> np.ndarray:
+    """One bird note: a pure whistle that glides from f0 to f1 on a curve, bowing up or down by
+    `bend` Hz in the middle. A little random pitch wobble keeps it from sounding like a machine,
+    and `warble` adds the fast flutter many songbirds have. Quick to start, slower to fade."""
+    k = int(SR * seconds)
+    u = np.linspace(0, 1, k)
+    curve = rng.uniform(0.5, 2.0)
+    freq = f0 * (f1 / f0) ** (u ** curve) + bend * np.sin(np.pi * u)
+    wobble = smooth_noise(rng, k, 18.0) - 0.5
+    freq = freq * (1 + 0.03 * wobble)
+    if warble:
+        freq = freq + warble * np.sin(2 * np.pi * warble_rate * u * seconds + rng.uniform(0, 6.3))
+    phase = 2 * np.pi * np.cumsum(freq) / SR
+    tone = np.sin(phase) + 0.05 * np.sin(2 * phase)
+    attack = rng.uniform(0.08, 0.25)
+    shape = np.where(u < attack, np.sin(np.pi / 2 * u / attack) ** 2, np.clip(np.cos(np.pi / 2 * (u - attack) / (1 - attack)), 0, 1) ** 1.2)
+    return tone * shape * (0.85 + 0.15 * np.sin(2 * np.pi * rng.uniform(20, 35) * u * seconds))
+
+
+def bird_song(rng, notes) -> np.ndarray:
+    """Strings notes together: (seconds, f0, f1, bend, warble, gap after)."""
+    parts = []
+    for seconds, f0, f1, bend, warble, gap in notes:
+        parts.append(bird_note(rng, seconds, f0, f1, bend, warble))
+        parts.append(np.zeros(int(SR * gap)))
+    return np.concatenate(parts)
+
+
+def song_whistler(rng, pitch):
+    """A clear phrase of three to seven whistled notes that wanders up and down, like a robin,
+    sometimes with a quick chip note between them."""
+    notes = []
+    f = pitch * rng.uniform(0.9, 1.1)
+    for _ in range(int(rng.integers(3, 8))):
+        f = float(np.clip(f * rng.uniform(0.82, 1.2), pitch * 0.75, pitch * 1.4))
+        if rng.random() < 0.25:
+            notes.append((rng.uniform(0.025, 0.045), f * 1.6, f * 0.9, 0, 0, rng.uniform(0.03, 0.07)))
+            continue
+        shape = rng.choice(["up", "down", "arch", "flat"])
+        f0, f1, bend = {"up": (f * 0.85, f * 1.1, 0), "down": (f * 1.15, f * 0.85, 0),
+                        "arch": (f, f * 0.95, f * 0.12), "flat": (f, f * 1.02, 0)}[shape]
+        notes.append((rng.uniform(0.07, 0.24), f0, f1, bend, rng.choice([0, 0, 0, 80, 150]), rng.uniform(0.03, 0.11)))
+    return bird_song(rng, notes)
+
+
+def song_trill(rng, pitch):
+    """A soft trill: one quick falling chirp repeated a dozen or more times, slowing at the end."""
+    notes = []
+    count = int(rng.integers(10, 18))
+    for i in range(count):
+        notes.append((0.035, pitch * 1.2, pitch * 0.9, 0, 0, 0.03 + 0.03 * i / count))
+    return bird_song(rng, notes)
+
+
+def song_two_tone(rng, pitch):
+    """A slow, sweet two-note call: a high held note, then a lower one."""
+    return bird_song(rng, [
+        (0.45, pitch * 1.25, pitch * 1.22, 0, 0, 0.12),
+        (0.5, pitch * 1.0, pitch * 0.98, 0, 0, 0.0),
+    ])
+
+
+def song_dove(rng, pitch):
+    """A distant dove: low, hollow coos in a soft rhythm."""
+    notes = [(0.35, pitch * 0.95, pitch, pitch * 0.05, 0, 0.18),
+             (0.7, pitch * 1.05, pitch * 0.9, pitch * 0.08, 0, 0.25),
+             (0.4, pitch, pitch * 0.92, 0, 0, 0.2),
+             (0.4, pitch, pitch * 0.9, 0, 0, 0.0)]
+    song = bird_song(rng, notes)
+    return lowpass(song, 1500)
+
+
+# Each bird keeps its own voice, distance and place in the field, and repeats a few versions of its
+# song with pauses, the way real birds do: (song, pitch Hz, gain, pan, pause range in seconds).
+BIRDS = [
+    (song_whistler, 2600, 0.9, 0.3, (4.0, 8.0)),
+    (song_whistler, 3300, 0.45, 0.8, (6.0, 11.0)),
+    (song_two_tone, 3800, 0.5, 0.6, (9.0, 15.0)),
+    (song_trill, 4600, 0.3, 0.15, (10.0, 18.0)),
+    (song_dove, 560, 0.55, 0.7, (12.0, 20.0)),
+]
+
+
+def sound_birdsong(rng, n):
+    """Early morning birdsong: a few birds near and far, each with its own repeated song, over a
+    faint, soft breeze. The far birds are quieter and duller."""
     left = np.zeros(n)
     right = np.zeros(n)
-    for _ in range(5):
-        freq = rng.uniform(4200, 5200)
-        gain = rng.uniform(0.15, 0.6)
-        pan = rng.uniform(0.1, 0.9)
-        chirp = cricket_chirp(freq) * gain
-        period = rng.uniform(0.45, 0.8)
-        t = rng.uniform(0, period)
+    for make, pitch, gain, pan, (lo, hi) in BIRDS:
+        repertoire = [make(rng, pitch) for _ in range(3)]
+        far = gain < 0.5
+        t = rng.uniform(0, hi)
         while t < n / SR:
-            place_wrap(left, chirp * (1 - pan), int(t * SR))
-            place_wrap(right, chirp * pan, int(t * SR))
-            t += period * rng.uniform(0.92, 1.08)
-    breeze = loop_curve(n, [(4, 1.0), (9, 0.4)])
+            song = repertoire[rng.integers(len(repertoire))] * gain * rng.uniform(0.8, 1.0)
+            if far:
+                song = lowpass(song, 3500 if pitch < 4000 else 6000)
+            place_wrap(left, song * np.sqrt(1 - pan), int(t * SR))
+            place_wrap(right, song * np.sqrt(pan), int(t * SR))
+            t += len(song) / SR + rng.uniform(lo, hi)
+    left = circular_reverb(left, rng, 1.6, 0.25)
+    right = circular_reverb(right, rng, 1.6, 0.25)
+    level = np.sqrt(np.mean(left ** 2) + np.mean(right ** 2))
+    breeze = loop_curve(n, [(3, 1.0), (7, 0.5)])
     for side in (left, right):
-        wind = circular_filter(pink(rng, n), lambda x: lowpass(x, 500))
-        side += 0.5 * wind / (np.sqrt(np.mean(wind ** 2)) + 1e-9) * np.std(left + 1e-9) * (0.4 + breeze)
+        air = circular_filter(pink(rng, n), lambda x: bandpass(x, 150, 1200, 1))
+        side += 0.35 * level * air / (np.std(air) + 1e-9) * (0.5 + 0.5 * breeze)
     return np.stack([left, right], axis=1)
 
 
-def sound_stream(rng, n):
-    """A small stream: rushing water with bubbles and trickles."""
+def sound_leaves(rng, n):
+    """Wind moving through a tree. Gusts come and go; in each gust thousands of dry leaf clicks
+    brush past each other over a soft airy rustle, and between gusts it settles to near stillness."""
+    gust = 0.03 + 0.97 * smooth_noise(rng, n, 0.15) ** 2.5
+    gust = gust * (0.7 + 0.3 * smooth_noise(rng, n, 2.0))
 
     def mono(r, k):
-        rush = bandpass(white(r, k), 300, 2500) * (0.6 + 0.4 * smooth_noise(r, k, 3.0))
-        bubbles = droplets(r, k, 40, 500, 2500, 25, 3.0)
-        return rush / (np.std(rush) + 1e-9) + bubbles / (np.std(bubbles) + 1e-9) * 0.5
+        g = gust[:k]
+        air = bandpass(white(r, k), 1500, 7000) * g ** 1.2
+        # Leaf contacts: short noise bursts of a few lengths, much denser while a gust blows.
+        grains = np.zeros(k)
+        for ms in (1.5, 3.0, 6.0):
+            hits = (r.random(k) < 1200 * g ** 2 / SR) * r.uniform(0.1, 1.0, k)
+            size = int(SR * ms / 1000)
+            kernel = r.standard_normal(size) * np.exp(-np.arange(size) / (size / 3))
+            grains += signal.fftconvolve(hits, kernel)[:k]
+        grains = bandpass(grains, 2000, 9000)
+        return 0.35 * air / (np.std(air) + 1e-9) + grains / (np.std(grains) + 1e-9)
 
-    return stereo(rng, mono, n, 0.5)
+    out = stereo(rng, mono, n, 0.8)
+    low = lowpass(brown(rng, n), 300)
+    low = 0.15 * low / (np.std(low) + 1e-9) * gust
+    return out + low[:, None]
+
+
+PAD_CHORDS = [  # slow, open chords in D major: Dmaj9, Bm7, Gmaj7, Asus2
+    [73.42, 146.83, 220.0, 277.18, 329.63],
+    [61.74, 123.47, 185.0, 220.0, 293.66],
+    [49.0, 98.0, 146.83, 185.0, 246.94],
+    [55.0, 110.0, 164.81, 246.94, 329.63],
+]
+
+
+def pad_note(freq: float, seconds: float, n_total: int) -> np.ndarray:
+    """One soft pad voice: a few gentle harmonics from two detuned oscillators, slow in and out."""
+    k = int(SR * seconds)
+    t = np.arange(k) / SR
+    tone = np.zeros(k)
+    for detune in (-0.25, 0.25):
+        for h, amp in ((1, 1.0), (2, 0.35), (3, 0.12), (4, 0.05)):
+            tone += amp * np.sin(2 * np.pi * (freq + detune) * h * t)
+    attack, release = 3.0, 4.0
+    shape = np.minimum(1, t / attack) * np.clip((seconds - t) / release, 0, 1)
+    return tone * shape
+
+
+def sound_chords(rng, n):
+    """Calm chords: four open chords, each swelling in over a few seconds and fading into the
+    next, under a wide, soft hall. No melody and no beat."""
+    length = n / SR
+    chord_seconds = length / 12
+    left = np.zeros(n)
+    right = np.zeros(n)
+    for i in range(12):
+        chord = PAD_CHORDS[i % len(PAD_CHORDS)]
+        start = int(i * chord_seconds * SR)
+        for j, freq in enumerate(chord):
+            voice = pad_note(freq * rng.uniform(0.999, 1.001), chord_seconds + 4.0, n) * (1.0 if j else 0.8)
+            pan = 0.5 + 0.25 * (j - 2) / 2
+            place_wrap(left, voice * np.sqrt(1 - pan), start)
+            place_wrap(right, voice * np.sqrt(pan), start)
+    left = circular_filter(left, lambda x: lowpass(x, 2500))
+    right = circular_filter(right, lambda x: lowpass(x, 2500))
+    return np.stack([circular_reverb(left, rng, 4.0, 0.4), circular_reverb(right, rng, 4.0, 0.4)], axis=1)
+
+
+def hum_bed(n: int, gain: float) -> np.ndarray:
+    """A faint low D under the instruments, so their rests never feel empty."""
+    t = np.arange(n) / SR
+    return gain * (np.sin(2 * np.pi * whole_cycles(73.42, n) * t) + 0.5 * np.sin(2 * np.pi * whole_cycles(110.0, n) * t))
+
+
+def instrument_loop(rng, n, play_phrase, reverb_seconds: float, hum: float) -> np.ndarray:
+    """Places phrases around the loop with rests between them, wraps the last one into the start,
+    then adds a soft hall and the low hum. Left and right get slightly different halls."""
+    dry = np.zeros(n)
+    at = rng.uniform(0.5, 2.0)
+    while at < n / SR - 6:
+        at = play_phrase(dry, at)
+        at += rng.uniform(4.0, 7.0)
+    dry = dry / (np.sqrt(np.mean(dry ** 2)) + 1e-9)
+    bed = hum_bed(n, hum)
+    return np.stack([circular_reverb(dry, rng, reverb_seconds, 0.35) + bed,
+                     circular_reverb(dry, rng, reverb_seconds, 0.35) + bed], axis=1)
+
+
+def sound_flute(rng, n):
+    """A pan flute playing slow, simple phrases in D major pentatonic, mostly step by step."""
+    state = {"index": 3}
+
+    def phrase(dry, at):
+        for _ in range(int(rng.integers(3, 6))):
+            state["index"] = int(np.clip(state["index"] + rng.choice([-2, -1, -1, 1, 1, 2]), 0, len(FLUTE_NOTES) - 1))
+            length = rng.uniform(1.6, 3.0)
+            place_wrap(dry, pan_flute(rng, FLUTE_NOTES[state["index"]], length) * rng.uniform(0.7, 1.0), int(at * SR))
+            at += length + rng.uniform(0.05, 0.3)
+        return at
+
+    return instrument_loop(rng, n, phrase, 2.8, 0.1)
+
+
+def sound_piano(rng, n):
+    """Soft felt piano: short connected phrases about a second per note, ending on a quiet
+    two-note chord, then a rest."""
+    state = {"index": 4}
+
+    def phrase(dry, at):
+        for note in range(int(rng.integers(4, 8))):
+            state["index"] = int(np.clip(state["index"] + rng.choice([-2, -1, -1, 1, 1, 2]), 0, len(PIANO_NOTES) - 1))
+            gain = rng.uniform(0.45, 0.75) * (0.8 if note else 1.0)
+            place_wrap(dry, piano_note(PIANO_NOTES[state["index"]]) * gain, int(at * SR))
+            at += rng.uniform(0.9, 1.5)
+        place_wrap(dry, piano_note(PIANO_NOTES[max(state["index"] - 2, 0)]) * 0.4, int(at * SR))
+        place_wrap(dry, piano_note(PIANO_NOTES[state["index"]]) * 0.35, int(at * SR))
+        return at + 1.0
+
+    return instrument_loop(rng, n, phrase, 2.5, 0.12)
 
 
 def breath_cue(freq: float, seconds: float, gain: float) -> np.ndarray:
@@ -813,16 +1008,22 @@ SOUNDS = {
     "alpha": sound_alpha,
     "om": sound_om,
     "bowls": sound_bowls,
-    "crickets": sound_crickets,
-    "stream": sound_stream,
+    "white-noise": sound_white_noise,
+    "green-noise": sound_green_noise,
+    "birdsong": sound_birdsong,
+    "leaves": sound_leaves,
+    "chords": sound_chords,
+    "flute": sound_flute,
+    "piano": sound_piano,
 }
 
 # Sounds built as exact circles (no crossfade needed): their notes and reverb wrap around.
-CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush", "delta", "theta", "alpha", "om", "bowls", "crickets"}
+CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush", "delta", "theta", "alpha", "om", "bowls", "birdsong", "chords", "flute", "piano"}
 
 # Per-sound loudness, so the set feels consistent when switching between them.
 SOUND_LEVEL_DB = {"rain": -29, "lullaby": -23, "bells": -24, "chimes": -25, "heartbeat": -22, "guitar": -23, "fan": -21, "car": -26, "shush": -29,
-                  "delta": -24, "theta": -25, "alpha": -25, "om": -23, "bowls": -24, "crickets": -28, "stream": -26}
+                  "delta": -24, "theta": -25, "alpha": -25, "om": -23, "bowls": -24, 
+                  "white-noise": -30, "green-noise": -27, "birdsong": -27, "leaves": -29, "chords": -25, "flute": -25, "piano": -24}
 
 
 def generate_sounds(only: list[str]) -> None:

@@ -22,9 +22,9 @@ describe('catalog', () => {
     expect(MEDITATIONS).toHaveLength(15);
   });
 
-  it('has 19 soundscapes with unique ids, 3 of them binaural beats', () => {
-    expect(SOUNDSCAPES).toHaveLength(19);
-    expect(new Set(SOUNDSCAPES.map((s) => s.id)).size).toBe(19);
+  it('has 24 soundscapes with unique ids, 3 of them binaural beats', () => {
+    expect(SOUNDSCAPES).toHaveLength(24);
+    expect(new Set(SOUNDSCAPES.map((s) => s.id)).size).toBe(24);
     expect(SOUNDSCAPES.filter((s) => s.group === 'binaural').map((s) => s.id)).toEqual(['delta', 'theta', 'alpha']);
   });
 
@@ -42,8 +42,11 @@ describe('soundscapes', () => {
 
   it('includes the current soundscapes and none of the retired ones', () => {
     const ids = SOUNDSCAPES.map((s) => s.id);
-    expect(ids).toEqual(expect.arrayContaining(['lullaby', 'bells', 'chimes', 'heartbeat', 'guitar', 'car', 'shush']));
-    for (const retired of ['drone', 'thunderstorm', 'wind', 'night']) {
+    expect(ids).toEqual(
+      expect.arrayContaining(['lullaby', 'bells', 'chimes', 'birdsong', 'leaves', 'white-noise', 'green-noise', 'flute']),
+    );
+    // Summer Night and Gentle Stream sounded unnatural and must not come back.
+    for (const retired of ['drone', 'thunderstorm', 'wind', 'night', 'crickets', 'stream']) {
       expect(ids).not.toContain(retired);
     }
   });
