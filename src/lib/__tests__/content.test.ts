@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals';
 
-import { CATEGORIES, MEDITATIONS, SOUNDSCAPES, audioFor, findMeditation } from '../../content/catalog';
+import { CATEGORIES, MEDITATIONS, SOUND_CATEGORIES, SOUNDSCAPES, audioFor, findMeditation } from '../../content/catalog';
 import { clampPosition, formatClock } from '../time';
 
 jest.mock('../../content/audio-files', () => {
@@ -25,7 +25,14 @@ describe('catalog', () => {
   it('has 24 soundscapes with unique ids, 3 of them binaural beats', () => {
     expect(SOUNDSCAPES).toHaveLength(24);
     expect(new Set(SOUNDSCAPES.map((s) => s.id)).size).toBe(24);
-    expect(SOUNDSCAPES.filter((s) => s.group === 'binaural').map((s) => s.id)).toEqual(['delta', 'theta', 'alpha']);
+    const binaural = SOUND_CATEGORIES.find((c) => c.id === 'binaural');
+    expect(binaural?.soundscapes.map((s) => s.id)).toEqual(['delta', 'theta', 'alpha']);
+  });
+
+  it('puts every sound in exactly one non-empty sound category', () => {
+    const listed = SOUND_CATEGORIES.flatMap((c) => c.soundscapes.map((s) => s.id));
+    expect(listed.sort()).toEqual(SOUNDSCAPES.map((s) => s.id).sort());
+    for (const category of SOUND_CATEGORIES) expect(category.soundscapes.length).toBeGreaterThan(0);
   });
 
   it('gives every meditation a unique id and its category', () => {

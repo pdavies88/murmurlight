@@ -1,6 +1,6 @@
 /**
- * The Murmurlight mark: a warm crescent moon (the light) with three soft sound arcs flowing from
- * it (the murmur), on a deep dusk gradient.
+ * The Murmurlight mark: the same lit orb the app shows in Breathe and the player, with a faint ring
+ * and a soft glow, on a deep dusk gradient.
  *
  * This file is the single source for the logo. The app renders it with `SvgXml`, and
  * `scripts/generate-brand-assets.mjs` renders the same markup to the app icon and splash PNGs.
@@ -18,8 +18,8 @@ export function buildLogoSvg({ cornerRadius = 16, withBackground = true }: LogoS
   const background = withBackground
     ? `<linearGradient id="mm-tile" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0E1033"/>
-      <stop offset="0.55" stop-color="#2A2470"/>
-      <stop offset="1" stop-color="#5B3FB8"/>
+      <stop offset="0.6" stop-color="#241E62"/>
+      <stop offset="1" stop-color="#3E2C8E"/>
     </linearGradient>`
     : '';
 
@@ -27,28 +27,19 @@ export function buildLogoSvg({ cornerRadius = 16, withBackground = true }: LogoS
   <defs>
     ${background}
     <radialGradient id="mm-glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#FFD9A8" stop-opacity="0.45"/>
-      <stop offset="1" stop-color="#FFD9A8" stop-opacity="0"/>
+      <stop offset="0" stop-color="#A99CFF" stop-opacity="0.55"/>
+      <stop offset="0.6" stop-color="#A99CFF" stop-opacity="0.15"/>
+      <stop offset="1" stop-color="#A99CFF" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="mm-moon" x1="0" y1="0" x2="0.4" y2="1">
-      <stop offset="0" stop-color="#FFF4E0"/>
-      <stop offset="1" stop-color="#FFB98A"/>
-    </linearGradient>
-    <mask id="mm-crescent">
-      <rect width="64" height="64" fill="#000"/>
-      <circle cx="25" cy="32" r="13" fill="#fff"/>
-      <circle cx="31.5" cy="27" r="11.5" fill="#000"/>
-    </mask>
+    <radialGradient id="mm-orb" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.45" stop-color="#F0C6E8"/>
+      <stop offset="1" stop-color="#6A5CE0"/>
+    </radialGradient>
   </defs>
   ${withBackground ? `<rect width="64" height="64" rx="${cornerRadius}" fill="url(#mm-tile)"/>` : ''}
-  <circle cx="25" cy="32" r="20" fill="url(#mm-glow)"/>
-  <rect width="64" height="64" fill="url(#mm-moon)" mask="url(#mm-crescent)"/>
-  <g fill="none" stroke="#D9D0FF" stroke-linecap="round" stroke-width="2.4">
-    <path d="M39.6 19.8 A19 19 0 0 1 39.6 44.2" stroke-opacity="0.9"/>
-    <path d="M43.4 16.6 A24 24 0 0 1 43.4 47.4" stroke-opacity="0.6"/>
-    <path d="M47.2 13.4 A29 29 0 0 1 47.2 50.6" stroke-opacity="0.32"/>
-  </g>
-  <circle cx="44" cy="10" r="0.9" fill="#FFF4E0" fill-opacity="0.8"/>
-  <circle cx="13" cy="15" r="0.7" fill="#FFF4E0" fill-opacity="0.6"/>
+  <circle cx="32" cy="32" r="29" fill="url(#mm-glow)"/>
+  <circle cx="32" cy="32" r="23" fill="none" stroke="#C9C0FF" stroke-opacity="0.35" stroke-width="0.8"/>
+  <circle cx="32" cy="32" r="16" fill="url(#mm-orb)"/>
 </svg>`;
 }

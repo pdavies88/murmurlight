@@ -22,8 +22,16 @@ export type Soundscape = {
   id: string;
   title: string;
   description: string;
-  /** Binaural beats need headphones, so the Sounds tab lists them in their own section. */
-  group?: 'binaural';
+  /** The id of the sound category the Sounds tab lists it under. */
+  category: string;
+};
+
+/** A section of the Sounds tab, such as Nature or Music. */
+export type SoundCategory = {
+  id: string;
+  title: string;
+  description: string;
+  soundscapes: Soundscape[];
 };
 
 export const CATEGORIES: Category[] = catalog.categories.map((category) => ({
@@ -39,7 +47,13 @@ export const CATEGORIES: Category[] = catalog.categories.map((category) => ({
 
 export const MEDITATIONS: Meditation[] = CATEGORIES.flatMap((category) => category.meditations);
 
-export const SOUNDSCAPES = catalog.soundscapes as Soundscape[];
+export const SOUNDSCAPES: Soundscape[] = catalog.soundscapes;
+
+/** The Sounds tab's sections, in order, each with its sounds. */
+export const SOUND_CATEGORIES: SoundCategory[] = catalog.soundCategories.map((category) => ({
+  ...category,
+  soundscapes: SOUNDSCAPES.filter((soundscape) => soundscape.category === category.id),
+}));
 
 export function findMeditation(id: string): Meditation | undefined {
   return MEDITATIONS.find((meditation) => meditation.id === id);

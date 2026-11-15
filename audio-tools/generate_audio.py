@@ -848,27 +848,26 @@ def sound_birdsong(rng, n):
 
 
 def sound_leaves(rng, n):
-    """Wind moving through a tree. Gusts come and go; in each gust thousands of dry leaf clicks
-    brush past each other over a soft airy rustle, and between gusts it settles to near stillness."""
-    gust = 0.03 + 0.97 * smooth_noise(rng, n, 0.15) ** 2.5
-    gust = gust * (0.7 + 0.3 * smooth_noise(rng, n, 2.0))
+    """Wind moving through a leafy tree. It is a soft, smooth rustle with no sharp clicks: a body of
+    filtered noise in the mid range, a thin airy top, and a quick, gentle flutter as the leaves
+    shimmer. Gusts swell and settle, and each side has its own trees, so the sound moves."""
+    gust = 0.12 + 0.88 * lowpass(smooth_noise(rng, n, 0.12), 0.5, 1) ** 1.6
+    gust = np.clip(gust, 0, None)
 
     def mono(r, k):
         g = gust[:k]
-        air = bandpass(white(r, k), 1500, 7000) * g ** 1.2
-        # Leaf contacts: short noise bursts of a few lengths, much denser while a gust blows.
-        grains = np.zeros(k)
-        for ms in (1.5, 3.0, 6.0):
-            hits = (r.random(k) < 1200 * g ** 2 / SR) * r.uniform(0.1, 1.0, k)
-            size = int(SR * ms / 1000)
-            kernel = r.standard_normal(size) * np.exp(-np.arange(size) / (size / 3))
-            grains += signal.fftconvolve(hits, kernel)[:k]
-        grains = bandpass(grains, 2000, 9000)
-        return 0.35 * air / (np.std(air) + 1e-9) + grains / (np.std(grains) + 1e-9)
+        # Leaves shimmer a few times a second. A smoothed curve keeps it a flutter, never a crackle.
+        flutter = lowpass(smooth_noise(r, k, 9.0), 6.0, 1)
+        flutter = 0.75 + 0.5 * (flutter - flutter.mean()) / (np.std(flutter) * 4 + 1e-9)
+        body = lowpass(bandpass(pink(r, k), 350, 3200, 1), 2400, 2)
+        top = lowpass(bandpass(pink(r, k), 2500, 6000, 1), 5000, 2)
+        body = body / (np.std(body) + 1e-9) * g * flutter
+        top = 0.22 * top / (np.std(top) + 1e-9) * g ** 1.8 * flutter
+        return body + top
 
-    out = stereo(rng, mono, n, 0.8)
-    low = lowpass(brown(rng, n), 300)
-    low = 0.15 * low / (np.std(low) + 1e-9) * gust
+    out = stereo(rng, mono, n, 0.85)
+    low = lowpass(brown(rng, n), 250)
+    low = 0.18 * low / (np.std(low) + 1e-9) * gust
     return out + low[:, None]
 
 
@@ -966,18 +965,22 @@ def sound_piano(rng, n):
     return instrument_loop(rng, n, phrase, 2.5, 0.12)
 
 
-def breath_cue(freq: float, seconds: float, gain: float) -> np.ndarray:
-    """A short, soft tone for the breathing pacer, faded in and out so it never clicks."""
+def breath_cue(freq: float, seconds: float) -> np.ndarray:
+    """A short, soft tone for the breathing pacer. It swells in gently instead of striking, then
+    dies away to true silence well before the file ends, so it never sounds cut off."""
     n = int(SR * seconds)
-    tone = chime(freq, seconds)[:n]
-    fade = np.minimum(1, np.arange(n)[::-1] / (SR * 0.3))
-    return tone * fade * gain
+    t = np.arange(n) / SR
+    tone = np.sin(2 * np.pi * freq * t) + 0.12 * np.sin(2 * np.pi * freq * 2 * t)
+    swell = np.sin(np.pi / 2 * np.minimum(1, t / 0.06)) ** 2
+    decay = np.exp(-t / (seconds * 0.28))
+    tail = 0.5 + 0.5 * np.cos(np.pi * np.clip((t - seconds * 0.6) / (seconds * 0.4), 0, 1))
+    return tone * swell * decay * tail
 
 
 CUES = {
-    "in": lambda: breath_cue(392.0, 1.6, 0.5),
-    "hold": lambda: breath_cue(587.33, 0.8, 0.25),
-    "out": lambda: breath_cue(293.66, 1.8, 0.5),
+    "in": lambda: breath_cue(392.0, 0.9),
+    "hold": lambda: breath_cue(587.33, 0.6),
+    "out": lambda: breath_cue(293.66, 1.0),
 }
 OUT_CUES = ROOT / "assets" / "audio" / "cues"
 
@@ -986,7 +989,9 @@ def generate_cues() -> None:
     print("Breathing cues")
     for cid, make in CUES.items():
         mono = make()
-        mono = mono / (np.max(np.abs(mono)) + 1e-9) * 10 ** (-6 / 20)
+        # The hold tone is a quieter nudge than the in and out tones.
+        peak_db = -16 if cid == "hold" else -12
+        mono = mono / (np.max(np.abs(mono)) + 1e-9) * 10 ** (peak_db / 20)
         encode(np.stack([mono, mono], axis=1), OUT_CUES / f"{cid}.m4a", 96000)
 
 

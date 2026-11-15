@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { VolumeSlider } from '@/components/volume-slider';
 import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
-import { SOUNDSCAPES, findSoundscape, type Soundscape } from '@/content/catalog';
+import { SOUND_CATEGORIES, findSoundscape, type Soundscape } from '@/content/catalog';
 import { MIX_PRESETS, type MixPreset } from '@/content/presets';
 import { usePlayback } from '@/context/playback-context';
 import { useTheme } from '@/hooks/use-theme';
@@ -21,7 +21,9 @@ const WIDE_WINDOW = 600;
 /** The sound mixer: layer sounds, set each volume, and let a sleep timer fade them out. */
 export default function SoundsScreen() {
   const window = useWindowDimensions();
-  const tileWidth = window.width >= WIDE_WINDOW ? '30%' : '47%';
+  const wide = window.width >= WIDE_WINDOW;
+  // Tiles grow to fill a row, but a lone last tile stops at one column's width instead of the full row.
+  const tileSize = { width: wide ? '30%' : '47%', maxWidth: wide ? '32%' : '48%' } as const;
 
   return (
     <ThemedView style={styles.container}>
@@ -52,29 +54,25 @@ export default function SoundsScreen() {
           <ThemedText style={styles.sectionTitle} accessibilityRole="header">
             Build your own
           </ThemedText>
-          <View style={styles.grid}>
-            {SOUNDSCAPES.filter((soundscape) => soundscape.group !== 'binaural').map((soundscape) => (
-              <View key={soundscape.id} style={[styles.tileSlot, { width: tileWidth }]}>
-                <SoundTile soundscape={soundscape} />
+          {SOUND_CATEGORIES.map((category) => (
+            <View key={category.id} style={styles.section}>
+              <View style={styles.categoryHeader}>
+                <ThemedText style={styles.categoryTitle} accessibilityRole="header">
+                  {category.title}
+                </ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {category.description}
+                </ThemedText>
               </View>
-            ))}
-          </View>
-          <View style={styles.header}>
-            <ThemedText style={styles.sectionTitle} accessibilityRole="header">
-              Binaural beats
-            </ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              Wear headphones. Each ear hears a slightly different tone, and together they make a slow pulse. Mix
-              them with any sound above.
-            </ThemedText>
-          </View>
-          <View style={styles.grid}>
-            {SOUNDSCAPES.filter((soundscape) => soundscape.group === 'binaural').map((soundscape) => (
-              <View key={soundscape.id} style={[styles.tileSlot, { width: tileWidth }]}>
-                <SoundTile soundscape={soundscape} />
+              <View style={styles.grid}>
+                {category.soundscapes.map((soundscape) => (
+                  <View key={soundscape.id} style={[styles.tileSlot, tileSize]}>
+                    <SoundTile soundscape={soundscape} />
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
         </ScrollView>
       </SafeAreaView>
     </ThemedView>
@@ -473,6 +471,15 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: Spacing.three,
+  },
+  categoryHeader: {
+    gap: Spacing.half,
+  },
+  categoryTitle: {
+    fontSize: 16,
+    lineHeight: 22,
+    fontFamily: DisplayFont.semiBold,
+    fontWeight: 'normal',
   },
   sectionTitle: {
     fontSize: 20,

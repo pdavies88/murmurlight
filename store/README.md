@@ -66,7 +66,8 @@ Mix sleep sounds and binaural beats, breathe with a guided pacer and drift off w
 ```
 Relaxation Station is now Murmurlight, with new ways to wind down. Everything is still free.
 
-- 12 new sounds: Birdsong, Rustling Leaves, White Noise, Green Noise, Calm Chords, Pan Flute, Soft Piano, Om Drone, Singing Bowls, and Delta, Theta and Alpha binaural beats.
+- 12 new sounds: Birdsong, Rustling Leaves, White Noise, Green Noise, Calm Chords, Pan Flute, Soft Piano, Om Drone, Singing Bowls, and Delta, Theta and Alpha binaural beats. Sounds are now grouped into Nature, Steady sounds, Music, Meditative and Binaural beats.
+- A new look: the glowing Murmurlight orb is the new app icon.
 
 - Sound mixer: layer up to 4 sounds and set the volume of each. Your mix is saved on your phone.
 - Ready-made mixes: Rainy cabin, Night shore, Deep focus, Deep meditation, Forest morning and Nap time.

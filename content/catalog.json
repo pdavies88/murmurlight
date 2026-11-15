@@ -126,129 +126,177 @@
       ]
     }
   ],
+  "soundCategories": [
+    {
+      "id": "nature",
+      "title": "Nature",
+      "description": "Rain, sea, fire, birds and trees."
+    },
+    {
+      "id": "steady",
+      "title": "Steady sounds",
+      "description": "Even sounds that cover a noisy room."
+    },
+    {
+      "id": "music",
+      "title": "Music",
+      "description": "Slow, simple music with no beat."
+    },
+    {
+      "id": "meditative",
+      "title": "Meditative",
+      "description": "Bells, bowls and a low chant."
+    },
+    {
+      "id": "binaural",
+      "title": "Binaural beats",
+      "description": "Wear headphones. Each ear hears a slightly different tone, and together they make a slow pulse. Mix them with any other sound."
+    }
+  ],
   "soundscapes": [
     {
       "id": "rain",
       "title": "Gentle Rain",
-      "description": "A light, soft rain."
+      "description": "A light, soft rain.",
+      "category": "nature"
     },
     {
       "id": "chimes",
       "title": "Wind Chimes",
-      "description": "Metal chimes swaying in a gentle breeze."
+      "description": "Metal chimes swaying in a gentle breeze.",
+      "category": "meditative"
     },
     {
       "id": "ocean",
       "title": "Ocean Waves",
-      "description": "Waves washing slowly onto the shore."
+      "description": "Waves washing slowly onto the shore.",
+      "category": "nature"
     },
     {
       "id": "lullaby",
       "title": "Music Box Lullaby",
-      "description": "Brahms' Lullaby on a gentle music box."
+      "description": "Brahms' Lullaby on a gentle music box.",
+      "category": "music"
     },
     {
       "id": "heartbeat",
       "title": "Heartbeat",
-      "description": "A slow, steady heartbeat."
+      "description": "A slow, steady heartbeat.",
+      "category": "steady"
     },
     {
       "id": "fire",
       "title": "Crackling Fire",
-      "description": "A warm fire popping and crackling."
+      "description": "A warm fire popping and crackling.",
+      "category": "nature"
     },
     {
       "id": "guitar",
       "title": "Guitar Lullaby",
-      "description": "Soft fingerpicked guitar."
+      "description": "Soft fingerpicked guitar.",
+      "category": "music"
     },
     {
       "id": "fan",
       "title": "Box Fan",
-      "description": "The steady hum of a fan."
+      "description": "The steady hum of a fan.",
+      "category": "steady"
     },
     {
       "id": "brown-noise",
       "title": "Brown Noise",
-      "description": "Deep, smooth noise that masks other sounds."
+      "description": "Deep, smooth noise that masks other sounds.",
+      "category": "steady"
     },
     {
       "id": "bells",
       "title": "Relaxing Bells",
-      "description": "Soft bells and singing bowls."
+      "description": "Soft bells and singing bowls.",
+      "category": "meditative"
     },
     {
       "id": "car",
       "title": "Car Ride",
-      "description": "The low, steady rumble of a drive. Made for naps."
+      "description": "The low, steady rumble of a drive. Made for naps.",
+      "category": "steady"
     },
     {
       "id": "shush",
       "title": "Gentle Shush",
-      "description": "Soft, steady shushing to settle little ones."
+      "description": "Soft, steady shushing to settle little ones.",
+      "category": "steady"
     },
     {
       "id": "delta",
       "title": "Delta Beats",
       "description": "A slow 2 Hz binaural pulse over a low hum.",
-      "group": "binaural"
+      "category": "binaural"
     },
     {
       "id": "theta",
       "title": "Theta Beats",
       "description": "A gentle 6 Hz binaural pulse for quiet, drifting moments.",
-      "group": "binaural"
+      "category": "binaural"
     },
     {
       "id": "alpha",
       "title": "Alpha Beats",
       "description": "A calm 10 Hz binaural pulse for reading or focus.",
-      "group": "binaural"
+      "category": "binaural"
     },
     {
       "id": "om",
       "title": "Om Drone",
-      "description": "One low, breathing note, like a long chanted om."
+      "description": "One low, breathing note, like a long chanted om.",
+      "category": "meditative"
     },
     {
       "id": "bowls",
       "title": "Singing Bowls",
-      "description": "Bowls struck one at a time and left to ring."
+      "description": "Bowls struck one at a time and left to ring.",
+      "category": "meditative"
     },
     {
       "id": "white-noise",
       "title": "White Noise",
-      "description": "Even, steady hiss that covers sudden sounds."
+      "description": "Even, steady hiss that covers sudden sounds.",
+      "category": "steady"
     },
     {
       "id": "green-noise",
       "title": "Green Noise",
-      "description": "Soft midrange noise, like distant flowing water."
+      "description": "Soft midrange noise, like distant flowing water.",
+      "category": "steady"
     },
     {
       "id": "birdsong",
       "title": "Birdsong",
-      "description": "A few birds singing near and far on a still morning."
+      "description": "A few birds singing near and far on a still morning.",
+      "category": "nature"
     },
     {
       "id": "leaves",
       "title": "Rustling Leaves",
-      "description": "Wind moving through the leaves of a tall tree."
+      "description": "Wind moving through the leaves of a tall tree.",
+      "category": "nature"
     },
     {
       "id": "chords",
       "title": "Calm Chords",
-      "description": "Slow, open chords that swell and fade into each other."
+      "description": "Slow, open chords that swell and fade into each other.",
+      "category": "music"
     },
     {
       "id": "flute",
       "title": "Pan Flute",
-      "description": "A pan flute playing slow, simple phrases."
+      "description": "A pan flute playing slow, simple phrases.",
+      "category": "music"
     },
     {
       "id": "piano",
       "title": "Soft Piano",
-      "description": "Quiet felt piano, a few notes at a time."
+      "description": "Quiet felt piano, a few notes at a time.",
+      "category": "music"
     }
   ]
 }
