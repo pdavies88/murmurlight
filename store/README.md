@@ -20,8 +20,10 @@ Everything App Store Connect asks for, ready to paste. Fill these in on the **we
 The Expo account is out of EAS cloud build credits, so build on this Mac and submit the result. A local build uses no credits.
 
 ```bash
-npx eas-cli@latest build --platform ios --profile production --local --output ./build/Murmurlight.ipa
+mkdir -p "$HOME/.eas-build-murmurlight" && EAS_LOCAL_BUILD_WORKINGDIR="$HOME/.eas-build-murmurlight" npx eas-cli@latest build --platform ios --profile production --local --output ./build/Murmurlight.ipa
 ```
+
+Build in a folder under your home directory, as above. The default temp folder is reached through the `/var` shortcut to `/private/var`. There, expo-widgets writes the home screen widget's path in the `/var` form, Metro looks under `/private/var`, and the build fails with "Unable to resolve module .../src/widgets/mixes-widget.tsx".
 
 ```bash
 npx eas-cli@latest submit --platform ios --profile production --path ./build/Murmurlight.ipa
