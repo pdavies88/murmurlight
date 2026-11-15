@@ -2,7 +2,7 @@
 
 A free sleep sound mixer with guided breathing and meditation. Everything is built into the app, so it works fully offline, even in airplane mode.
 
-- **Sound mixer:** layer up to 4 of 24 sounds, including three binaural beats, with a volume for each, saved on the phone. Six ready-made mixes, and Drift, which slowly moves each volume so the mix never sounds like a loop.
+- **Sound mixer:** layer up to 4 of 27 sounds, including three binaural beats and three isochronic pulse tones, with a volume for each, saved on the phone. Six ready-made mixes, and Drift, which slowly moves each volume so the mix never sounds like a loop.
 - **Sleep timer:** 15 to 60 minutes with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
 - **Breathe:** a breathing pacer with three patterns, soft tones and haptic taps.
 - **Wind down:** two minutes of breathing, a sleep meditation, then the mix with the sleep timer. The mix starts by itself when the meditation ends.

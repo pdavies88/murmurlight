@@ -692,6 +692,38 @@ def sound_alpha(rng, n):
     return binaural(rng, n, 220.0, 10.0)
 
 
+def isochronic(rng, n, carrier: float, rate: float) -> np.ndarray:
+    """An isochronic tone: one soft tone that swells on and off at a steady rate. Unlike a binaural
+    beat it needs no headphones, because the pulse is in the sound itself. Each pulse rises and
+    falls smoothly, so it never clicks, and it never falls fully silent. The carrier sits a little
+    higher than the binaural beats so phone speakers can play it."""
+    t = np.arange(n) / SR
+    f = whole_cycles(carrier, n)
+    pulse_rate = whole_cycles(rate, n)
+    tone = np.sin(2 * np.pi * f * t) + 0.2 * np.sin(2 * np.pi * 2 * f * t) + 0.05 * np.sin(2 * np.pi * 3 * f * t)
+    pulse = (0.5 - 0.5 * np.cos(2 * np.pi * pulse_rate * t)) ** 1.5
+    shaped = tone * (0.15 + 0.85 * pulse)
+    swell = 0.85 + 0.15 * loop_curve(n, [(3, 1.0), (7, 0.5)])
+    bed = circular_filter(pink(rng, n), lambda x: lowpass(x, 700))
+    bed = 0.15 * bed / (np.sqrt(np.mean(bed ** 2)) + 1e-9)
+    mono = shaped * swell
+    side = circular_filter(pink(rng, n), lambda x: lowpass(x, 700))
+    side = 0.05 * side / (np.sqrt(np.mean(side ** 2)) + 1e-9)
+    return np.stack([mono + bed + side, mono + bed - side], axis=1)
+
+
+def sound_iso_delta(rng, n):
+    return isochronic(rng, n, 160.0, 2.0)
+
+
+def sound_iso_theta(rng, n):
+    return isochronic(rng, n, 200.0, 6.0)
+
+
+def sound_iso_alpha(rng, n):
+    return isochronic(rng, n, 240.0, 10.0)
+
+
 def sound_om(rng, n):
     """A low, breathing drone on one note, like a long chanted om."""
     t = np.arange(n) / SR
@@ -1050,15 +1082,19 @@ SOUNDS = {
     "chords": sound_chords,
     "flute": sound_flute,
     "piano": sound_piano,
+    "iso-delta": sound_iso_delta,
+    "iso-theta": sound_iso_theta,
+    "iso-alpha": sound_iso_alpha,
 }
 
 # Sounds built as exact circles (no crossfade needed): their notes and reverb wrap around.
-CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush", "delta", "theta", "alpha", "om", "bowls", "birdsong", "chords", "flute", "piano"}
+CIRCULAR_SOUNDS = {"lullaby", "bells", "chimes", "heartbeat", "guitar", "shush", "delta", "theta", "alpha", "om", "bowls", "birdsong", "chords", "flute", "piano", "iso-delta", "iso-theta", "iso-alpha"}
 
 # Per-sound loudness, so the set feels consistent when switching between them.
 SOUND_LEVEL_DB = {"rain": -29, "lullaby": -23, "bells": -24, "chimes": -25, "heartbeat": -22, "guitar": -23, "fan": -21, "car": -26, "shush": -29,
                   "delta": -24, "theta": -25, "alpha": -25, "om": -23, "bowls": -24, 
-                  "white-noise": -30, "green-noise": -27, "birdsong": -27, "leaves": -29, "chords": -25, "flute": -25, "piano": -24}
+                  "white-noise": -30, "green-noise": -27, "birdsong": -27, "leaves": -29, "chords": -25, "flute": -25, "piano": -24,
+                  "iso-delta": -26, "iso-theta": -27, "iso-alpha": -27}
 
 
 def generate_sounds(only: list[str]) -> None:

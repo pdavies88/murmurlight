@@ -44,6 +44,9 @@ export const SOUNDSCAPE_AUDIO: Record<string, number> = {
   'chords': require('../../assets/audio/sounds/chords.m4a'),
   'flute': require('../../assets/audio/sounds/flute.m4a'),
   'piano': require('../../assets/audio/sounds/piano.m4a'),
+  'iso-delta': require('../../assets/audio/sounds/iso-delta.m4a'),
+  'iso-theta': require('../../assets/audio/sounds/iso-theta.m4a'),
+  'iso-alpha': require('../../assets/audio/sounds/iso-alpha.m4a'),
 };
 
 export const CUE_AUDIO: Record<string, number> = {

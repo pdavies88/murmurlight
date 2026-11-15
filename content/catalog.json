@@ -148,6 +148,11 @@
       "description": "Bells, bowls and a low chant."
     },
     {
+      "id": "pulse",
+      "title": "Pulse tones",
+      "description": "Isochronic tones: one soft tone that pulses at a slow, steady rate. No headphones needed. Mix them with any other sound."
+    },
+    {
       "id": "binaural",
       "title": "Binaural beats",
       "description": "Wear headphones. Each ear hears a slightly different tone, and together they make a slow pulse. Mix them with any other sound."
@@ -297,6 +302,24 @@
       "title": "Soft Piano",
       "description": "Quiet felt piano, a few notes at a time.",
       "category": "music"
+    },
+    {
+      "id": "iso-delta",
+      "title": "Delta Pulse",
+      "description": "A soft tone pulsing twice a second (2 Hz).",
+      "category": "pulse"
+    },
+    {
+      "id": "iso-theta",
+      "title": "Theta Pulse",
+      "description": "A soft tone pulsing six times a second (6 Hz).",
+      "category": "pulse"
+    },
+    {
+      "id": "iso-alpha",
+      "title": "Alpha Pulse",
+      "description": "A soft tone pulsing ten times a second (10 Hz).",
+      "category": "pulse"
     }
   ]
 }

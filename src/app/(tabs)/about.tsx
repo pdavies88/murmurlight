@@ -19,7 +19,7 @@ const FACTS = [
   },
   {
     title: 'Build your own mix',
-    body: 'Layer up to 4 of the 24 sounds, including binaural beats, and set the volume of each. Your mix is saved on this phone, and a sleep timer can fade it out.',
+    body: 'Layer up to 4 of the 27 sounds, including binaural beats and pulse tones, and set the volume of each. Your mix is saved on this phone, and a sleep timer can fade it out.',
   },
   {
     title: 'Works completely offline',

@@ -22,11 +22,13 @@ describe('catalog', () => {
     expect(MEDITATIONS).toHaveLength(15);
   });
 
-  it('has 24 soundscapes with unique ids, 3 of them binaural beats', () => {
-    expect(SOUNDSCAPES).toHaveLength(24);
-    expect(new Set(SOUNDSCAPES.map((s) => s.id)).size).toBe(24);
+  it('has 27 soundscapes with unique ids, with 3 binaural beats and 3 pulse tones', () => {
+    expect(SOUNDSCAPES).toHaveLength(27);
+    expect(new Set(SOUNDSCAPES.map((s) => s.id)).size).toBe(27);
     const binaural = SOUND_CATEGORIES.find((c) => c.id === 'binaural');
     expect(binaural?.soundscapes.map((s) => s.id)).toEqual(['delta', 'theta', 'alpha']);
+    const pulse = SOUND_CATEGORIES.find((c) => c.id === 'pulse');
+    expect(pulse?.soundscapes.map((s) => s.id)).toEqual(['iso-delta', 'iso-theta', 'iso-alpha']);
   });
 
   it('puts every sound in exactly one non-empty sound category', () => {

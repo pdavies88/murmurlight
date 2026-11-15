@@ -112,6 +112,21 @@ export function SoundIcon({ id, color, size = 32 }: { id: string; color: string;
           </G>
         );
       }
+      case 'iso-delta':
+      case 'iso-theta':
+      case 'iso-alpha': {
+        // A speaker sending out pulses: no headphones needed. Faster pulses get more bumps.
+        const pulses = id === 'iso-delta' ? 1 : id === 'iso-theta' ? 2 : 3;
+        const width = 13 / pulses;
+        let bumps = 'M15 18';
+        for (let i = 0; i < pulses; i++) bumps += ` q${width / 2} -${10 - pulses} ${width} 0`;
+        return (
+          <G {...stroke}>
+            <Path d="M3 13h4l5-4v14l-5-4H3z" />
+            <Path d={bumps} />
+          </G>
+        );
+      }
       case 'om':
         return (
           <G {...stroke}>
