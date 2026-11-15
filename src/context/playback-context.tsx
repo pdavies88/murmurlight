@@ -27,6 +27,10 @@ import { setBedtimeReminder } from '@/lib/bedtime-reminder';
 import { updateMixesWidget } from '@/lib/mixes-widget';
 import type { SleepTimerActivityProps } from '@/widgets/sleep-timer-activity';
 import { clampPosition } from '@/lib/time';
+import { MIX_PRESETS } from '@/content/presets';
+import { logMindfulSession } from '@/lib/health';
+import { noteMixPlayed } from '@/lib/journal-store';
+import { publishMixesToSiri } from '@/lib/siri';
 
 /** The meditation that is loaded in the player. */
 export type Track = {
@@ -190,6 +194,13 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
     void askForNotifications();
     setMixPlaying(true);
     startTimer(timerMinutes);
+    noteMixPlayed(sounds.map((sound) => sound.id));
+  };
+
+  // Saves the meditation that is ending to Apple Health, as the time listened up to now.
+  const logMeditation = (seconds: number) => {
+    const now = Date.now();
+    logMindfulSession(now - seconds * 1000, now);
   };
 
   const haltMix = () => {
@@ -201,6 +212,7 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
   // wind-down routine asked for it. This runs while the meditation's audio still keeps the app awake.
   const onMeditationEnd = useEffectEvent(() => {
     player.clearLockScreenControls();
+    logMeditation(status.duration);
     if (mixAfterMeditation.current) beginMix();
   });
   useEffect(() => {
@@ -279,6 +291,11 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
     updateMixesWidget(library, mix);
   }, [library, mix]);
 
+  // Siri and Shortcuts offer the saved and ready-made mixes by name.
+  useEffect(() => {
+    publishMixesToSiri(library);
+  }, [library]);
+
   const value: PlaybackContextValue = {
     track,
     isPlaying: status.playing,
@@ -291,6 +308,7 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
         player.play();
         return;
       }
+      if (track && !finished) logMeditation(status.currentTime);
       const next = describe(id);
       player.replace(audioFor('meditation', id));
       player.play();
@@ -309,6 +327,7 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
       }
     },
     stop: () => {
+      if (track && !finished) logMeditation(status.currentTime);
       mixAfterMeditation.current = false;
       player.pause();
       player.clearLockScreenControls();
@@ -349,7 +368,8 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
       return ok;
     },
     playNamedMix: (id) => {
-      const named = library.find((entry) => entry.id === id);
+      // A saved mix, or a ready-made one: Siri can ask for either.
+      const named = library.find((entry) => entry.id === id) ?? MIX_PRESETS.find((preset) => preset.id === id);
       if (named) {
         setMix(named.sounds);
         beginMix(named.sounds);

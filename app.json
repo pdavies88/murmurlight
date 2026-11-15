@@ -47,6 +47,14 @@
             ]
           }
         ]
+      },
+      "infoPlist": {
+        "NSHealthUpdateUsageDescription": "Murmurlight saves your meditation and breathing sessions to Apple Health as mindful minutes.",
+        "NSHealthShareUsageDescription": "Murmurlight does not read your health data. It only saves mindful minutes.",
+        "NSAlarmKitUsageDescription": "Murmurlight uses an alarm to wake you gently with birdsong at the time you choose."
+      },
+      "entitlements": {
+        "com.apple.developer.healthkit": true
       }
     },
     "android": {
@@ -121,13 +129,23 @@
       [
         "expo-notifications",
         {
-          "enableRemoteNotifications": false
+          "enableRemoteNotifications": false,
+          "sounds": [
+            "./assets/audio/wake/gentle-wake.wav"
+          ]
         }
-      ]
+      ],
+      "expo-app-intents"
     ],
     "experiments": {
       "typedRoutes": true,
-      "reactCompiler": true
+      "reactCompiler": true,
+      "inlineModules": {
+        "watchedDirectories": [
+          "app-intents",
+          "native"
+        ]
+      }
     },
     "extra": {
       "router": {},

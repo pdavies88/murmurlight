@@ -995,6 +995,36 @@ def generate_cues() -> None:
         encode(np.stack([mono, mono], axis=1), OUT_CUES / f"{cid}.m4a", 96000)
 
 
+WAKE_SECONDS = 28  # alarm sounds must stay under 30 seconds, and AlarmKit plays them once
+OUT_WAKE = ROOT / "assets" / "audio" / "wake" / "gentle-wake.wav"
+
+
+def generate_wake() -> None:
+    """The gentle wake alarm: birdsong over a soft, warm chord. It rises slowly from silence, so it
+    wakes you gently, and stays soft. Written as 16-bit WAV, a format iOS alarm sounds accept."""
+    print("Gentle wake")
+    rng = np.random.default_rng(4242)
+    n = SR * WAKE_SECONDS
+    birds = sound_birdsong(rng, n)
+    chord = np.zeros(n)
+    for freq in PAD_CHORDS[0][1:]:
+        chord += pad_note(freq, WAKE_SECONDS, n) * 0.25
+    chord = reverb(lowpass(chord, 2500), rng, 3.0, 0.35)
+    birds = birds / (np.std(birds) + 1e-9)
+    chord = chord / (np.std(chord) + 1e-9) * 0.6
+    mix = birds + chord[:, None]
+    t = np.arange(n) / SR
+    swell = np.minimum(1, t / 18) ** 2  # from silence to full over the first 18 seconds
+    tail = np.clip((WAKE_SECONDS - t) / 2, 0, 1)
+    mix = mix * (swell * tail)[:, None]
+    mix = mix / (np.max(np.abs(mix)) + 1e-9) * 10 ** (-3 / 20)
+    OUT_WAKE.parent.mkdir(parents=True, exist_ok=True)
+    # Mono at half the sample rate keeps the file near 1 MB. A phone speaker loses nothing here.
+    mono = signal.resample_poly(mix.mean(axis=1), 1, 2)
+    sf.write(OUT_WAKE, mono, SR // 2, subtype="PCM_16")
+    print(f"  wrote {OUT_WAKE.relative_to(ROOT)} ({OUT_WAKE.stat().st_size / 1e6:.1f} MB)")
+
+
 SOUNDS = {
     "rain": sound_rain,
     "chimes": sound_chimes,
@@ -1423,13 +1453,16 @@ def write_audio_map() -> None:
 
 
 if __name__ == "__main__":
-    # all | sounds [id ...] | meditations [id ...] | cues | voice | map
+    # all | sounds [id ...] | meditations [id ...] | cues | wake | voice | map
     args = sys.argv[1:]
     target = args[0] if args else "all"
     rest = args[1:]
     if target == "cues":
         generate_cues()
         write_audio_map()
+        sys.exit()
+    if target == "wake":
+        generate_wake()
         sys.exit()
     if target == "voice":
         design_voice()

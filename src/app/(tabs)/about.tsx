@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
-import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LogoMark } from '@/components/brand/logo-mark';
@@ -9,6 +9,8 @@ import { ThemedView } from '@/components/themed-view';
 import { APP_NAME, PRIVACY_POLICY_URL, SUPPORT_EMAIL, SUPPORT_URL } from '@/constants/brand';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useSettings } from '@/lib/app-settings';
+import { healthAvailable, setLogToHealth } from '@/lib/health';
 
 const FACTS = [
   {
@@ -29,7 +31,7 @@ const FACTS = [
   },
   {
     title: 'Your privacy',
-    body: 'The app collects no data. Your saved mix stays on this phone, and nothing you do in the app leaves it.',
+    body: 'The app collects no data. Your mixes and sleep journal stay on this phone. If you turn on Apple Health, mindful minutes go only to the Health app on this phone.',
   },
   {
     title: 'A gentle note',
@@ -52,6 +54,8 @@ export default function AboutScreen() {
               Version {version}
             </ThemedText>
           </View>
+
+          {healthAvailable() ? <HealthRow /> : null}
 
           {FACTS.map((fact) => (
             <ThemedView key={fact.title} type="backgroundElement" style={styles.card}>
@@ -80,6 +84,37 @@ export default function AboutScreen() {
           </ThemedText>
         </ScrollView>
       </SafeAreaView>
+    </ThemedView>
+  );
+}
+
+/** Turns mindful minutes in Apple Health on or off. */
+function HealthRow() {
+  const theme = useTheme();
+  const { logToHealth } = useSettings();
+  const toggle = async (on: boolean) => {
+    const granted = await setLogToHealth(on);
+    if (on && !granted) {
+      Alert.alert(
+        'Apple Health is off',
+        'To save mindful minutes, open the Health app, go to Sharing, then Apps, and allow Murmurlight.',
+      );
+    }
+  };
+  return (
+    <ThemedView type="backgroundElement" style={[styles.link, styles.healthRow]}>
+      <View style={styles.flex}>
+        <ThemedText type="smallBold">Apple Health</ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          Save meditations and breathing sessions of a minute or more as mindful minutes.
+        </ThemedText>
+      </View>
+      <Switch
+        accessibilityLabel="Save mindful minutes to Apple Health"
+        value={logToHealth}
+        onValueChange={(on) => void toggle(on)}
+        trackColor={{ true: theme.tint, false: theme.backgroundSelected }}
+      />
     </ThemedView>
   );
 }
@@ -127,6 +162,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: Spacing.three,
     gap: Spacing.one,
+  },
+  healthRow: {
+    gap: Spacing.three,
   },
   link: {
     flexDirection: 'row',

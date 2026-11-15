@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Switch, View, type LayoutChangeEvent } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useEffectEvent, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BreathOrb } from '@/components/breath-orb';
@@ -9,6 +10,7 @@ import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useBreathSession } from '@/hooks/use-breath-session';
+import { logMindfulSession } from '@/lib/health';
 import { BREATH_PATTERNS, type BreathPattern } from '@/lib/breathing';
 
 /** The pacer orb's full size, before it shrinks to fit short screens. */
@@ -25,8 +27,19 @@ export default function BreatheScreen() {
   const [patternId, setPatternId] = useState(BREATH_PATTERNS[0].id);
   const pattern = BREATH_PATTERNS.find((entry) => entry.id === patternId) ?? BREATH_PATTERNS[0];
   const [startedAt, setStartedAt] = useState<number | null>(null);
-  const [withSound, setWithSound] = useState(true);
-  const { running, moment, orbStyle } = useBreathSession(pattern, startedAt, withSound);
+  const { running, moment, orbStyle } = useBreathSession(pattern, startedAt);
+  // Siri's "Start breathing" opens this tab with ?start=1 and the pacer begins at once.
+  const { start } = useLocalSearchParams<{ start?: string }>();
+  const startFromSiri = useEffectEvent(() => {
+    setStartedAt(Date.now());
+    router.setParams({ start: undefined });
+  });
+  useEffect(() => {
+    if (!start) return;
+    // After this render, so the tab has finished opening.
+    const timeout = setTimeout(() => startFromSiri(), 0);
+    return () => clearTimeout(timeout);
+  }, [start]);
 
   // Measured from the screen itself. Wider than tall, such as a phone in landscape, puts the
   // controls beside the orb and fits everything on one screen with no scrolling.
@@ -55,10 +68,11 @@ export default function BreatheScreen() {
       running={running}
       breathNumber={moment.cycles + 1}
       onPattern={setPatternId}
-      withSound={withSound}
-      onSound={setWithSound}
       onStart={() => setStartedAt(Date.now())}
-      onStop={() => setStartedAt(null)}
+      onStop={() => {
+        if (startedAt !== null) logMindfulSession(startedAt, Date.now());
+        setStartedAt(null);
+      }}
     />
   );
 
@@ -96,8 +110,6 @@ function Controls({
   running,
   breathNumber,
   onPattern,
-  withSound,
-  onSound,
   onStart,
   onStop,
 }: {
@@ -105,8 +117,6 @@ function Controls({
   running: boolean;
   breathNumber: number;
   onPattern: (id: string) => void;
-  withSound: boolean;
-  onSound: (on: boolean) => void;
   onStart: () => void;
   onStop: () => void;
 }) {
@@ -153,15 +163,6 @@ function Controls({
       <ThemedText type="small" themeColor="textSecondary" style={styles.centered}>
         {running ? `Breath ${breathNumber}` : pattern.description}
       </ThemedText>
-      <View style={styles.soundRow}>
-        <ThemedText style={styles.soundLabel}>Soft tones</ThemedText>
-        <Switch
-          accessibilityLabel="Soft tones at each change"
-          value={withSound}
-          onValueChange={onSound}
-          trackColor={{ true: theme.tint, false: theme.backgroundSelected }}
-        />
-      </View>
       <Button
         title={running ? 'Stop' : 'Start breathing'}
         variant={running ? 'secondary' : 'primary'}
@@ -261,16 +262,6 @@ const styles = StyleSheet.create({
     fontFamily: DisplayFont.bold,
     fontWeight: 'normal',
     textAlign: 'center',
-  },
-  soundRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 44,
-  },
-  soundLabel: {
-    fontFamily: DisplayFont.semiBold,
-    fontWeight: 'normal',
   },
   centered: {
     textAlign: 'center',

@@ -13,6 +13,7 @@ import { SplashOverlay } from "@/components/brand/splash-overlay";
 import { Colors } from "@/constants/theme";
 import { HeaderDoneButton } from "@/components/header-done-button";
 import { PlaybackProvider } from "@/context/playback-context";
+import { SiriActions } from "@/components/siri-actions";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -78,7 +79,16 @@ export default function RootLayout() {
               headerRight: () => <HeaderDoneButton />,
             }}
           />
+          <Stack.Screen
+            name="journal"
+            options={{
+              title: "Sleep journal",
+              presentation: "modal",
+              headerRight: () => <HeaderDoneButton />,
+            }}
+          />
         </Stack>
+        <SiriActions />
         <SplashOverlay />
       </PlaybackProvider>
     </ThemeProvider>

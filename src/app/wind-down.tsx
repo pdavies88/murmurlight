@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { DisplayFont, MaxContentWidth, Spacing } from '@/constants/theme';
 import { CATEGORIES, findSoundscape } from '@/content/catalog';
+import { logMindfulSession } from '@/lib/health';
 import { MIX_PRESETS } from '@/content/presets';
 import { usePlayback } from '@/context/playback-context';
 import { useBreathSession } from '@/hooks/use-breath-session';
@@ -75,6 +76,7 @@ export default function WindDownScreen() {
   };
 
   const startMeditation = () => {
+    if (step === 'breathe' && breatheStartedAt !== null) logMindfulSession(breatheStartedAt, Date.now());
     playback.playMeditation(meditationId);
     playback.setMixAfterMeditation(true);
     setStep('meditate');
@@ -85,6 +87,18 @@ export default function WindDownScreen() {
     playback.playMix();
     setStep('sleep');
   };
+
+  // Siri's "Wind down" opens this screen with ?start= and the routine begins at once.
+  const { start: startParam } = useLocalSearchParams<{ start?: string }>();
+  const startFromSiri = useEffectEvent(() => {
+    if (chosenStep === 'setup') start();
+  });
+  useEffect(() => {
+    if (!startParam) return;
+    // After this render, so the screen has finished opening.
+    const timeout = setTimeout(() => startFromSiri(), 0);
+    return () => clearTimeout(timeout);
+  }, [startParam]);
 
   // Step 1 moves on by itself once the breathing time is up.
   const onBreatheDone = useEffectEvent(startMeditation);

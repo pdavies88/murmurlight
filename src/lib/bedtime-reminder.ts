@@ -8,12 +8,13 @@ import { APP_NAME } from '@/constants/brand';
 const REMINDER_ID = 'bedtime-reminder';
 const CHANNEL_ID = 'bedtime';
 
-// Show the reminder as a banner even if the app happens to be open at bedtime.
+// Show the reminder as a banner even if the app happens to be open at bedtime. Only the gentle wake
+// notification plays its sound.
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
+  handleNotification: async (notification) => ({
     shouldShowBanner: true,
     shouldShowList: true,
-    shouldPlaySound: false,
+    shouldPlaySound: notification.request.identifier === 'gentle-wake',
     shouldSetBadge: false,
   }),
 });

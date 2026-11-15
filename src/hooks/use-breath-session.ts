@@ -60,10 +60,10 @@ function tap(kind: BreathPhaseKind): void {
 /**
  * Runs a breathing session from `startedAt` (milliseconds since 1970, or null when stopped).
  * Returns where the session is, and the animated style that grows and shrinks the orb. Each
- * change plays a haptic tap and, when `withSound` is on, a soft tone.
+ * change plays a haptic tap and a soft tone.
  * The screen stays on while it runs, because nobody touches it.
  */
-export function useBreathSession(pattern: BreathPattern, startedAt: number | null, withSound = true) {
+export function useBreathSession(pattern: BreathPattern, startedAt: number | null) {
   const reduceMotion = useReducedMotion();
   // The clock ticks while a session runs. Right after a start it can still read a moment before
   // `startedAt`, which counts as the very beginning.
@@ -97,13 +97,13 @@ export function useBreathSession(pattern: BreathPattern, startedAt: number | nul
       return;
     }
     tap(kind);
-    if (withSound) playCue(kind);
+    playCue(kind);
     if (reduceMotion || kind === 'hold') return;
     scale.value = withTiming(kind === 'in' ? 1 : EMPTY_SCALE, {
       duration: seconds * 1000,
       easing: Easing.inOut(Easing.sin),
     });
-  }, [running, phaseKey, kind, seconds, reduceMotion, scale, withSound]);
+  }, [running, phaseKey, kind, seconds, reduceMotion, scale]);
   const orbStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
 
   return { running, elapsed, moment, orbStyle };

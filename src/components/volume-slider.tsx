@@ -19,7 +19,9 @@ type VolumeSliderProps = {
  */
 export function VolumeSlider({ value, onChange, accessibilityLabel, color }: VolumeSliderProps) {
   return (
-    <Host matchContents={{ vertical: true }} seedColor={color} style={styles.host}>
+    // A fixed height, not matchContents. Measuring the SwiftUI slider happens after it appears, and
+    // for a tile scrolled off screen it can come late or wrong, which pushed the slider out of its tile.
+    <Host seedColor={color} style={styles.host}>
       <Slider
         value={value}
         onValueChange={(next) => onChange(clampVolume(next))}
@@ -31,7 +33,7 @@ export function VolumeSlider({ value, onChange, accessibilityLabel, color }: Vol
 
 const styles = StyleSheet.create({
   host: {
-    minHeight: 44,
-    justifyContent: 'center',
+    height: 44,
+    width: '100%',
   },
 });

@@ -4,6 +4,7 @@ import Animated, { interpolate, useAnimatedScrollHandler, useAnimatedStyle, useS
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Hero, useHeroHeight } from '@/components/brand/hero';
+import { GentleWake, JournalRow, SleepCheckIn } from '@/components/night-cards';
 import { PlayPauseIcon } from '@/components/play-pause-icon';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -42,8 +43,11 @@ export default function MeditateScreen() {
             styles.content,
             { paddingLeft: Spacing.four + insets.left, paddingRight: Spacing.four + insets.right },
           ]}>
+          <SleepCheckIn />
           <WindDownCard />
           <BedtimeReminder />
+          <GentleWake />
+          <JournalRow />
           {CATEGORIES.map((category) => (
             <View key={category.id} style={styles.category}>
               <View style={styles.categoryHeader}>

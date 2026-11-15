@@ -78,6 +78,10 @@ Relaxation Station is now Murmurlight, with new ways to wind down. Everything is
 - Your mixes: name and save as many mixes as you like, up to 12.
 - Home screen widget: start a saved mix with one tap.
 - Bedtime reminder: an optional gentle nudge each night.
+- Sleep journal: rate each night in one tap and see which sounds go with your best sleep. It stays on your phone.
+- Gentle wake: an optional daily alarm with birdsong and a soft chord that rise slowly from silence.
+- Apple Health: save meditations and breathing sessions as mindful minutes.
+- Siri and Shortcuts: "Play Rainy cabin in Murmurlight", "Wind down with Murmurlight" or "Breathe with Murmurlight".
 - A new look and a new icon.
 - Optimized for iPhone Duo, and every iPhone now turns sideways.
 ```
@@ -98,6 +102,12 @@ Choose 15, 30, 45 or 60 minutes. Your mix fades out over the last minute instead
 
 WIND DOWN IN ONE TAP
 Two minutes of slow breathing, a guided sleep meditation, then your mix with the sleep timer. Lock your phone after the first step and let the rest play. Turn on the bedtime reminder for a gentle nudge each night.
+
+SLEEP JOURNAL AND GENTLE WAKE
+Each morning, rate last night in one tap. The journal remembers which sounds played and shows the ones on your best nights. Wake to birdsong and a soft chord that rise slowly from silence, at a time you choose.
+
+APPLE HEALTH AND SIRI
+Save meditations and breathing sessions to Apple Health as mindful minutes. Ask Siri to play a mix, start breathing or wind down.
 
 BREATHE
 Follow an orb that grows as you breathe in and shrinks as you breathe out. Choose Box (4-4-4-4), Long exhale (4-7-8) or Even (5-5). A soft tone and a gentle tap mark each change, so it works with your eyes closed.
@@ -166,6 +176,10 @@ Thank you for the review. We agreed that 1.2.1 looked like other meditation and 
 - Breathe tab: a breathing pacer with three patterns, and soft tones and haptic taps at each change, usable with eyes closed.
 - Named saved mixes (up to 12) and a home screen widget that starts a saved mix with one tap.
 - Optional bedtime reminder: a local daily notification. Permission is asked only when the user picks a time, and the app works fully without it. No server.
+- Sleep journal: a one-tap morning rating that remembers which sounds played that night and shows the sounds on the user's best nights. Stored only on the device.
+- Gentle wake alarm (AlarmKit on iOS 26, a local notification on earlier versions) with a sound made for this app. Permission is asked only when the user picks a time.
+- Apple Health: optional, off by default. Writes mindful minutes only and reads nothing.
+- Siri and Shortcuts (App Intents): play a saved or ready-made mix, start breathing, or start the wind-down routine.
 - Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
 - Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
 
@@ -187,13 +201,18 @@ e. Meditate tab: tap Wind down, then Start wind-down. Tap Skip to the meditation
 f. Meditate tab: tap any meditation, for example Settle In, to open the player.
 g. Sounds tab: tap Save on the mix card, name the mix, and it appears under Your mixes. Add the Murmurlight widget from the home screen to start it with one tap.
 h. Meditate tab: choose a Bedtime reminder time. The app asks for notification permission at that moment.
-i. About tab: links to the privacy policy and support page.
+i. Meditate tab: before 2 PM, the "How did you sleep?" card appears. Tap a rating, then open Sleep journal.
+j. Meditate tab: choose a Gentle wake time. The app asks for alarm permission at that moment.
+k. About tab: turn on Apple Health. The Health permission sheet asks to write mindful minutes only. Then run a breathing session for over a minute and tap Stop. It appears in the Health app under Mindfulness.
+l. Siri: say "Breathe with Murmurlight" or "Play Rainy cabin in Murmurlight". The actions also appear in the Shortcuts app.
+m. About tab: links to the privacy policy and support page.
 
 BACKGROUND AUDIO
 The "audio" background mode keeps the mix and meditations playing with the screen locked. That is the app's core purpose: users fall asleep to their mix.
 
 4. EXTERNAL SERVICES
 None: no backend, network, accounts, payments, analytics, ads or AI.
+HealthKit: the app only writes mindful minutes, and only after the user turns it on in the About tab. It reads no health data, and nothing is sent off the device.
 
 5. REGIONAL DIFFERENCES
 None.
