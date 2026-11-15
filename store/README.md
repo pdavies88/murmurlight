@@ -239,14 +239,15 @@ Record on a physical iPhone running the latest iOS, in about 3 minutes. Install 
 
 ## Screenshots
 
-All screenshots come from a Release build of version 2.0.0 on the iPhone 18 Pro Max simulator with a clean 9:41 status bar, captured on November 13, 2026. They lead with the sound mixer, because it is what makes 2.0 different. Upload them in this order:
+All screenshots come from a Release build of version 2.0.0 on the iPhone 18 Pro Max simulator with a clean 9:41 status bar, captured on November 14, 2026. They lead with the sound mixer, because it is what makes 2.0 different. Upload them in this order:
 
 1. `01-sound-mixer.png`: the Rainy cabin mix playing, with a 30 minute sleep timer and Drift on
 2. `02-sleep-timer.png`: the sleep timer Live Activity on the Lock Screen
 3. `03-wind-down.png`: the three-step Wind down routine
 4. `04-breathe.png`: the breathing pacer mid-breath
-5. `05-meditate.png`: the Meditate tab with the Wind down card and sleep meditations
-6. `06-sounds-dark.png`: the mixer in dark mode
+5. `05-meditate.png`: the Meditate tab with the Wind down card, bedtime reminder and gentle wake
+6. `06-sounds-dark.png`: the sound categories and volume bars in dark mode
+7. `07-sleep-journal.png`: the sleep journal, filled with sample nights
 
 | Folder | Size | App Store Connect slot |
 | --- | --- | --- |
