@@ -1,4 +1,4 @@
-import { useIsFocused } from 'expo-router';
+import { useNavigation } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Switch, TextInput, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,11 +26,9 @@ export default function SoundsScreen() {
 
   // Going to another tab stops the mix, so it doesn't keep playing under Breathe or a meditation.
   // Locking the phone or leaving the app doesn't, because the tab stays focused.
-  const focused = useIsFocused();
+  const navigation = useNavigation();
   const onLeave = useEffectEvent(() => stopMix());
-  useEffect(() => {
-    if (!focused) onLeave();
-  }, [focused]);
+  useEffect(() => navigation.addListener('blur', () => onLeave()), [navigation]);
   const wide = window.width >= WIDE_WINDOW;
   // Tiles grow to fill a row, but a lone last tile stops at one column's width instead of the full row.
   const tileSize = { width: wide ? '30%' : '47%', maxWidth: wide ? '32%' : '48%' } as const;

@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useEffectEvent, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -40,6 +40,16 @@ export default function BreatheScreen() {
     const timeout = setTimeout(() => startFromSiri(), 0);
     return () => clearTimeout(timeout);
   }, [start]);
+
+  // Going to another tab ends the session, like tapping Stop, so the tones and taps don't follow you
+  // there. Locking the phone keeps it going, because the tab stays focused.
+  const navigation = useNavigation();
+  const onLeave = useEffectEvent(() => {
+    if (startedAt === null) return;
+    logMindfulSession(startedAt, Date.now());
+    setStartedAt(null);
+  });
+  useEffect(() => navigation.addListener('blur', () => onLeave()), [navigation]);
 
   // Measured from the screen itself. Wider than tall, such as a phone in landscape, puts the
   // controls beside the orb and fits everything on one screen with no scrolling.
