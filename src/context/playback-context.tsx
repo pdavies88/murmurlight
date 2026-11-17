@@ -80,6 +80,8 @@ type PlaybackContextValue = {
   toggleMix: () => void;
   /** Plays the mix, with the sleep timer if one is chosen. */
   playMix: () => void;
+  /** Stops the mix and its sleep timer. The mix stays saved, ready to play again. */
+  stopMix: () => void;
   clearMix: () => void;
   /** When on, each sound's volume slowly rises and falls so the mix feels alive. */
   drift: boolean;
@@ -382,6 +384,9 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
       else beginMix();
     },
     playMix: () => beginMix(),
+    stopMix: () => {
+      if (mixPlaying) haltMix();
+    },
     clearMix: () => {
       setMix([]);
       haltMix();
