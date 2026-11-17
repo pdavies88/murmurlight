@@ -361,29 +361,40 @@ function SoundTile({ soundscape }: { soundscape: Soundscape }) {
           <View style={[styles.tileBody, { transform: [{ scale: pressed ? 0.97 : 1 }] }]}>
             <SoundIcon id={soundscape.id} color={active ? theme.onTint : theme.tint} size={36} />
             <View style={styles.tileText}>
-              <ThemedText style={[styles.tileTitle, { color: active ? theme.onTint : theme.text }]}>
+              <ThemedText
+                numberOfLines={2}
+                style={[styles.tileTitle, { color: active ? theme.onTint : theme.text }]}>
                 {soundscape.title}
               </ThemedText>
-              {active ? null : (
-                <ThemedText type="small" numberOfLines={3} themeColor="textSecondary">
-                  {soundscape.description}
-                </ThemedText>
-              )}
+              {/* The description and the volume bar share this fixed slot, so turning a sound on or
+                  off never changes the tile's size. */}
+              <View style={styles.descriptionSlot}>
+                {active ? null : (
+                  <ThemedText type="small" numberOfLines={3} themeColor="textSecondary">
+                    {soundscape.description}
+                  </ThemedText>
+                )}
+              </View>
             </View>
           </View>
         )}
       </Pressable>
       {sound ? (
-        <VolumeSlider
-          value={sound.volume}
-          onChange={(volume) => setSoundVolume(soundscape.id, volume)}
-          accessibilityLabel={`${soundscape.title} volume`}
-          color={theme.onTint}
-        />
+        <View style={styles.tileSlider}>
+            <VolumeSlider
+            value={sound.volume}
+            onChange={(volume) => setSoundVolume(soundscape.id, volume)}
+            accessibilityLabel={`${soundscape.title} volume`}
+            color={theme.onTint}
+          />
+        </View>
       ) : null}
     </View>
   );
 }
+
+/** Room for three lines of description. The volume bar sits in the same space. */
+const TILE_SLOT_HEIGHT = 60;
 
 const styles = StyleSheet.create({
   container: {
@@ -520,9 +531,19 @@ const styles = StyleSheet.create({
   },
   tile: {
     flex: 1,
-    minHeight: 160,
+    // Icon, two lines of title and the description slot, so every tile is the same size.
+    minHeight: 190,
     borderRadius: 24,
     padding: Spacing.three,
+  },
+  descriptionSlot: {
+    height: TILE_SLOT_HEIGHT,
+  },
+  tileSlider: {
+    position: 'absolute',
+    left: Spacing.three,
+    right: Spacing.three,
+    bottom: Spacing.three + (TILE_SLOT_HEIGHT - 44) / 2,
   },
   tilePressable: {
     flex: 1,
