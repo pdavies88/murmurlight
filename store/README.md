@@ -57,16 +57,18 @@ The app links to the privacy policy and support page from its **About** tab, as 
 
 **App name note:** version 1.2.1 was rejected on November 13, 2026 under guideline 4.3(a), spam: Apple saw it as too similar to other meditation and sound apps. Version 2.0 answers that with new features and a new name. Other developers hold "Relaxation Station" and "Lullmix", so 2.0 uses `Murmurlight`. Set it in **App Information → Name**. No live app used that name on November 14, 2026. The home screen name comes from `app.json` and is also "Murmurlight".
 
+**Where "free" goes:** say it in the promotional text, What's New and description, and leave it out of the name, subtitle and keywords. Guideline 2.3.7 bans pricing words in those three fields, and the App Store already shows a **Get** button and "Free" for a free app. Searching "free" doesn't need the keyword: Apple ranks free apps on price automatically.
+
 ### Promotional text (170 characters)
 
 ```
-Mix sleep sounds and binaural beats, breathe with a guided pacer and drift off with a sleep timer. Free forever: no subscription, no account, no ads, works offline.
+Every feature is free, for good. No subscription, no trial, no ads and no account. Mix sleep sounds, breathe with a guided pacer and fall asleep to a fading timer.
 ```
 
 ### What's New in 2.0 (4,000 characters)
 
 ```
-Relaxation Station is now Murmurlight, with new ways to wind down. Everything is still free.
+Relaxation Station is now Murmurlight. Every feature is still free: no subscription, no trial, no in-app purchases and no ads.
 
 - 15 new sounds: Birdsong, Rustling Leaves, White Noise, Green Noise, Calm Chords, Pan Flute, Soft Piano, Om Drone, Singing Bowls, Delta, Theta and Alpha binaural beats, and Delta, Theta and Alpha pulse tones. Sounds are now grouped into Nature, Steady sounds, Music, Meditative, Pulse tones and Binaural beats.
 - A new look: the glowing Murmurlight orb is the new app icon.
@@ -91,7 +93,9 @@ Relaxation Station is now Murmurlight, with new ways to wind down. Everything is
 ### Description (4,000 characters)
 
 ```
-Murmurlight is a free sleep sound mixer with guided breathing and meditation. Build the sound that helps you sleep, and keep it. No subscription, no account, no ads, and nothing ever leaves your phone.
+Murmurlight is completely free. Not a free trial and not a free tier: every sound, mix, meditation and feature is yours to use, with no subscription, no in-app purchases, no ads and no account. There is nothing to unlock.
+
+Most sleep apps put their best sounds behind a weekly subscription. Murmurlight doesn't. Build the sound that helps you sleep, keep it, and use it every night for free. Nothing you do ever leaves your phone.
 
 YOUR OWN SOUND MIX
 Layer up to 4 of 27 sounds and set each volume: Gentle Rain, Ocean Waves, Crackling Fire, Birdsong, Rustling Leaves, Wind Chimes, White Noise, Brown Noise, Green Noise, Box Fan, Car Ride, Heartbeat, Gentle Shush, Calm Chords, Pan Flute, Soft Piano, Guitar Lullaby, Music Box Lullaby, Relaxing Bells, Om Drone, Singing Bowls, three pulse tones and three binaural beats. Turn on Drift and each sound slowly rises and falls, so the mix feels like real weather instead of a loop. Name and save your favorite mixes, and start one from the home screen widget. Or start with a ready-made mix: Rainy cabin, Night shore, Deep focus, Deep meditation, Forest morning or Nap time.
@@ -117,9 +121,9 @@ Follow an orb that grows as you breathe in and shrinks as you breathe out. Choos
 15 GUIDED MEDITATIONS
 Sleep, Stress Relief, Breathing, Body Scan and Focus, each in 3, 5 and 10 minute sessions. Every script was written and voiced for Murmurlight.
 
-FREE AND PRIVATE
-- Every feature is free. There is nothing to unlock.
-- No account, ads, tracking or analytics
+ALWAYS FREE AND PRIVATE
+- Every feature is free: no subscription, no trial and no in-app purchases
+- No ads, account, tracking or analytics
 - Works offline, even in airplane mode
 - Keeps playing with your screen locked
 - Optimized for iPhone Duo, and works upright or sideways
