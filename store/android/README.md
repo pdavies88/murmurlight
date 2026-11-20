@@ -61,7 +61,7 @@ Full description: use the **Description** block from `../README.md`. It works fo
 | Category | Health & Fitness |
 | Tags | For example: Meditation, Sleep, Relaxation |
 | Email | `preston5@protonmail.com` |
-| Website | `https://pdavies88.github.io/relaxation-station/` |
+| Website | `https://pdavies88.github.io/murmurlight/` |
 
 ## 5. App content
 
@@ -69,7 +69,7 @@ Full description: use the **Description** block from `../README.md`. It works fo
 
 | Form | Answer |
 | --- | --- |
-| Privacy policy | `https://pdavies88.github.io/relaxation-station/privacy/` |
+| Privacy policy | `https://pdavies88.github.io/murmurlight/privacy/` |
 | App access | All functionality is available without special access |
 | Ads | No |
 | Content rating | Category **All Other App Types**. Answer **No** to every question. Expected: Everyone / PEGI 3. |

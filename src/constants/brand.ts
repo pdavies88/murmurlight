@@ -2,7 +2,7 @@ export const APP_NAME = 'Murmurlight';
 export const APP_TAGLINE = 'Mix your own sleep sounds, breathe and meditate. Free and offline.';
 
 // Public pages served by GitHub Pages from the docs/ folder of the repo.
-export const SITE_URL = 'https://pdavies88.github.io/relaxation-station';
+export const SITE_URL = 'https://pdavies88.github.io/murmurlight';
 export const PRIVACY_POLICY_URL = `${SITE_URL}/privacy/`;
 export const SUPPORT_URL = `${SITE_URL}/support/`;
 export const SUPPORT_EMAIL = 'preston5@protonmail.com';

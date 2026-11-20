@@ -37,9 +37,11 @@ The local build uses the Xcode on this Mac, which must be 27.1 or later for the 
 
 | Field | Value |
 | --- | --- |
-| Privacy Policy URL | https://pdavies88.github.io/relaxation-station/privacy/ |
-| Support URL | https://pdavies88.github.io/relaxation-station/support/ |
-| Marketing URL (optional) | https://pdavies88.github.io/relaxation-station/ |
+| Privacy Policy URL | https://pdavies88.github.io/murmurlight/privacy/ |
+| Support URL | https://pdavies88.github.io/murmurlight/support/ |
+| Marketing URL (optional) | https://pdavies88.github.io/murmurlight/ |
+
+The repo was renamed from `relaxation-station` to `murmurlight` on November 19, 2026. The old addresses under `pdavies88.github.io/relaxation-station/` forward to these, through a small redirect-only repo called `relaxation-station`. Builds 19 and earlier link to the old addresses from the About tab, so keep that redirect repo.
 
 The app links to the privacy policy and support page from its **About** tab, as Apple requires.
 
