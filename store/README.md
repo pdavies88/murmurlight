@@ -57,7 +57,7 @@ The app links to the privacy policy and support page from its **About** tab, as 
 
 **App name note:** version 1.2.1 was rejected on November 13, 2026 under guideline 4.3(a), spam: Apple saw it as too similar to other meditation and sound apps. Version 2.0 answers that with new features and a new name. Other developers hold "Relaxation Station" and "Lullmix", so 2.0 uses `Murmurlight`. Set it in **App Information → Name**. No live app used that name on November 14, 2026. The home screen name comes from `app.json` and is also "Murmurlight".
 
-**Where "free" goes:** say it in the promotional text, What's New and description, and leave it out of the name, subtitle and keywords. Guideline 2.3.7 bans pricing words in those three fields, and the App Store already shows a **Get** button and "Free" for a free app. Searching "free" doesn't need the keyword: Apple ranks free apps on price automatically.
+**Where "free" goes:** say it in the promotional text, What's New and description, and leave it out of the name, subtitle and keywords. Guideline 2.3.7 bans pricing words in those three fields, and the App Store already shows a **Get** button and "Free" for a free app.
 
 ### Promotional text (170 characters)
 
