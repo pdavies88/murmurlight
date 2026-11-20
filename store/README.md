@@ -194,7 +194,7 @@ Thank you for the review. We agreed that 1.2.1 looked like other meditation and 
 This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 27 sounds were synthesized for it. The developer has no other meditation or sound apps.
 
 1. SCREEN RECORDING
-Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the Breathe tab, the wind-down routine with the screen locked, and the About tab. The app has no login, user-generated content or in-app purchases.
+Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the pulse tones, the Breathe tab, the wind-down routine, gentle wake, the sleep journal, Apple Health and the About tab. The screen is never locked, because locking stops a screen recording, so the Live Activity is shown in the Dynamic Island and Notification Center. The app has no login, user-generated content or in-app purchases.
 
 2. PURPOSE AND AUDIENCE
 Murmurlight is for anyone who wants to fall asleep, nap or relax. Its core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
@@ -234,16 +234,19 @@ All content was made for this app. The narration was generated with the open-sou
 
 Record on a physical iPhone running the latest iOS, in about 3 minutes. Install the submitted build from TestFlight first.
 
+Locking the phone stops a screen recording, so these steps never lock it. Notification Center shows the same Live Activity as the Lock Screen.
+
 1. Add **Screen Recording** to Control Center (Settings → Control Center) if it isn't there. Start a recording from Control Center.
 2. On the Home Screen, tap the Murmurlight icon.
 3. **Sounds** tab: tap Gentle Rain and Crackling Fire, drag both volume bars, and turn on Drift. Choose a 15 minute sleep timer.
-4. Lock the phone and wake it to show the Live Activity counting down. Unlock.
-5. Tap the **Rainy cabin** ready-made mix.
-6. **Breathe** tab: tap **Start breathing** and follow two breaths. Tap **Stop**.
-7. **Meditate** tab: tap **Wind down**, then **Start wind-down**. After a few breaths, tap **Skip to the meditation**, lock the phone, unlock it, then tap **Skip to the mix**. Tap **Done**.
-8. Turn the phone sideways on the Sounds tab, then turn it back.
-9. **About** tab: tap **Privacy policy**.
-10. Stop the recording. It's saved to Photos. AirDrop it to your Mac and attach it in App Store Connect. If the file is too large, export a 1080p copy with QuickTime (File → Export As).
+4. Swipe up to go to the Home Screen: the countdown shows in the Dynamic Island. Swipe down from the top-left corner to open Notification Center, which shows the Live Activity counting down. Swipe up, then open Murmurlight again.
+5. Tap the **Rainy cabin** ready-made mix. Scroll down and tap **Delta Pulse** to show the pulse tones.
+6. **Breathe** tab: the mix stops when you leave Sounds. Tap **Start breathing** and follow two breaths. Tap **Stop**.
+7. **Meditate** tab: tap **Wind down**, then **Start wind-down**. After a few breaths, tap **Skip to the meditation**, then **Skip to the mix**. Tap **Done**.
+8. Still on **Meditate**: choose a **Gentle wake** time and allow the alarm when asked. Then tap **Sleep journal**. Before 2 PM, rate last night on the "How did you sleep?" card first.
+9. **About** tab: turn on **Apple Health** and allow mindful minutes. Then tap **Privacy policy**.
+10. Turn the phone sideways on the Sounds tab, then turn it back.
+11. Stop the recording. It's saved to Photos. AirDrop it to your Mac and attach it in App Store Connect. If the file is too large, export a 1080p copy with QuickTime (File → Export As).
 
 ## Screenshots
 
