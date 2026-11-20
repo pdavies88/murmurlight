@@ -170,63 +170,67 @@ Result, saved November 2, 2026: 9+ in 172 countries and regions, 12+ in Vietnam,
 | Sign-in required | No |
 | Contact name, phone and email | Yours. Apple uses these only to reach you. |
 
-### Notes
+### Reply to the rejection (4,000 characters)
 
-Version 2.0 replies to the guideline 4.3(a) rejection of 1.2.1. Record the screen recording below and attach it in **App Review Information → Attachment**, then paste this text into the **Notes** field. Paste the first section as your reply to the rejection in App Store Connect too.
+Paste this into the message thread of the rejected 1.2.1 submission in App Store Connect (App Review, the Resolution Center).
 
 ```
-RESPONSE TO THE 4.3(a) REJECTION OF 1.2.1
-Thank you for the review. We agreed that 1.2.1 looked like other meditation and sound apps, so 2.0 adds features built for this app and a new, unique name (Murmurlight, formerly Relaxation Station):
-- Sound mixer: layer up to 4 of 27 sounds with a volume for each, saved on the device. Six ready-made mixes.
-- Binaural beats and isochronic pulse tones: Delta, Theta and Alpha, generated for this app. The pulse tones work without headphones. No health claims are made.
-- Drift: each sound's volume slowly rises and falls on its own wave, so the mix never repeats like a loop.
+Thank you for the review. We agreed that 1.2.1 looked too much like other meditation and sound apps. Version 2.0 has a new, unique name (Murmurlight, formerly Relaxation Station) and features built for this app:
+- Sound mixer: layer up to 4 of 27 sounds, each with its own volume, saved on the device. Six ready-made mixes.
+- Drift: each sound's volume rises and falls on its own slow wave, so the mix never repeats like a loop.
 - Sleep timer with a one-minute fade-out, shown as a Live Activity on the Lock Screen and in the Dynamic Island.
-- Breathe tab: a breathing pacer with three patterns, and soft tones and haptic taps at each change, usable with eyes closed.
-- Named saved mixes (up to 12) and a home screen widget that starts a saved mix with one tap.
-- Optional bedtime reminder: a local daily notification. Permission is asked only when the user picks a time, and the app works fully without it. No server.
-- Sleep journal: a one-tap morning rating that remembers which sounds played that night and shows the sounds on the user's best nights. Stored only on the device.
-- Gentle wake alarm (AlarmKit on iOS 26, a local notification on earlier versions) with a sound made for this app. Permission is asked only when the user picks a time.
-- Apple Health: optional, off by default. Writes mindful minutes only and reads nothing.
-- Siri and Shortcuts (App Intents): play a saved or ready-made mix, start breathing, or start the wind-down routine.
-- Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts automatically when the meditation ends, with the screen locked.
-- Every feature is free, with no account, ads, tracking or network access. Most apps in this category lock these features behind a subscription.
+- Wind-down routine: one tap runs 2 minutes of paced breathing, a guided sleep meditation, then the user's mix with the sleep timer. The mix starts by itself when the meditation ends, with the screen locked.
+- Sleep journal: a one-tap morning rating that remembers which sounds played that night and shows the sounds on the user's best nights.
+- Gentle wake alarm (AlarmKit) with a sound made for this app.
+- Breathing pacer with three patterns, soft tones and haptic taps, usable with eyes closed.
+- Binaural beats and isochronic pulse tones (Delta, Theta and Alpha). The pulse tones work without headphones. No health claims are made.
+- Named saved mixes, a home screen widget, Siri and Shortcuts, and optional Apple Health mindful minutes.
 
-This app was not made from a template or purchased code. The developer wrote the code for this app. All 15 meditation scripts were written for it, the narration was generated for it, and all 27 sounds were synthesized for it. The developer has no other meditation or sound apps.
+Always free: every feature is free, with no subscription, trial, in-app purchase, ads, account or tracking. Most apps in this category lock these features behind a subscription.
+
+Original work: this app was not made from a template or purchased code. The developer wrote its code. All 15 meditation scripts were written for it, the narration was generated for it, and all 27 sounds were synthesized for it. The developer has no other meditation or sound apps.
+
+The App Review notes have step-by-step test instructions, and a screen recording from a physical iPhone is attached.
+```
+
+### Notes (4,000 characters)
+
+Paste this into **App Review Information → Notes** on the 2.0.0 version page, and attach the screen recording below in **App Review Information → Attachment**.
+
+```
+Version 2.0 replies to the guideline 4.3(a) rejection of 1.2.1. Our full reply is in the Resolution Center.
 
 1. SCREEN RECORDING
-Attached: a recording on a physical iPhone, starting from launch. It shows building a mix, Drift, the sleep timer and its Live Activity, the pulse tones, the Breathe tab, the wind-down routine, gentle wake, the sleep journal, Apple Health and the About tab. The screen is never locked, because locking stops a screen recording, so the Live Activity is shown in the Dynamic Island and Notification Center. The app has no login, user-generated content or in-app purchases.
+Attached: a recording on a physical iPhone, starting from launch. It shows a mix with Drift, the sleep timer and its Live Activity, the pulse tones, Breathe, the wind-down routine, gentle wake, the sleep journal, Apple Health and the About tab. Locking stops a screen recording, so the Live Activity is shown in the Dynamic Island and Notification Center instead.
 
 2. PURPOSE AND AUDIENCE
-Murmurlight is for anyone who wants to fall asleep, nap or relax. Its core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
+For anyone who wants to fall asleep, nap or relax. The core is the sound mixer and sleep timer. Breathing and meditation help users wind down first.
 
-3. SETUP AND TEST INSTRUCTIONS
-No login or setup is needed. All audio is bundled.
+3. TEST STEPS
+No login or setup. All audio is bundled, and the app never uses the network.
 a. Sounds tab: tap Gentle Rain, then Crackling Fire. Both play together. Drag each volume bar. Turn on Drift.
-b. Choose a 15 minute sleep timer, then lock the iPhone: the countdown shows on the Lock Screen and in the Dynamic Island, and the mix keeps playing.
-c. Tap a ready-made mix, such as Rainy cabin, to replace the mix.
-d. Breathe tab: choose Box and tap Start breathing. The orb grows and shrinks, with a haptic tap at each change.
-e. Meditate tab: tap Wind down, then Start wind-down. Tap Skip to the meditation and Skip to the mix to see all three steps quickly.
-f. Meditate tab: tap any meditation, for example Settle In, to open the player.
-g. Sounds tab: tap Save on the mix card, name the mix, and it appears under Your mixes. Add the Murmurlight widget from the home screen to start it with one tap.
-h. Meditate tab: choose a Bedtime reminder time. The app asks for notification permission at that moment.
+b. Choose a 15 minute sleep timer and lock the iPhone: the countdown shows on the Lock Screen and in the Dynamic Island, and the mix keeps playing.
+c. Tap a ready-made mix, such as Rainy cabin. Scroll down to Pulse tones and tap Delta Pulse.
+d. Breathe tab (the mix stops when you leave Sounds): tap Start breathing. The orb grows and shrinks, with a tone and a haptic tap at each change.
+e. Meditate tab: tap Wind down, then Start wind-down. Tap Skip to the meditation, then Skip to the mix, to see all three steps quickly.
+f. Meditate tab: tap a meditation, such as Settle In, to open the player.
+g. Sounds tab: tap Save on the mix card and name the mix. It appears under Your mixes, and the Murmurlight widget can start it from the Home Screen.
+h. Meditate tab: choose a Bedtime reminder or Gentle wake time. The app asks for notification or alarm permission only then.
 i. Meditate tab: before 2 PM, the "How did you sleep?" card appears. Tap a rating, then open Sleep journal.
-j. Meditate tab: choose a Gentle wake time. The app asks for alarm permission at that moment.
-k. About tab: turn on Apple Health. The Health permission sheet asks to write mindful minutes only. Then run a breathing session for over a minute and tap Stop. It appears in the Health app under Mindfulness.
-l. Siri: say "Breathe with Murmurlight" or "Play Rainy cabin in Murmurlight". The actions also appear in the Shortcuts app.
-m. About tab: links to the privacy policy and support page.
+j. About tab: turn on Apple Health. The sheet asks to write mindful minutes only. Run a breathing session for over a minute and tap Stop. It appears in Health under Mindfulness.
+k. Siri: say "Breathe with Murmurlight" or "Play Rainy cabin in Murmurlight". The actions are also in the Shortcuts app.
 
 BACKGROUND AUDIO
 The "audio" background mode keeps the mix and meditations playing with the screen locked. That is the app's core purpose: users fall asleep to their mix.
 
 4. EXTERNAL SERVICES
-None: no backend, network, accounts, payments, analytics, ads or AI.
-HealthKit: the app only writes mindful minutes, and only after the user turns it on in the About tab. It reads no health data, and nothing is sent off the device.
+None: no backend, network, accounts, payments, analytics, ads or AI. HealthKit is optional and off by default. The app only writes mindful minutes, reads no health data, and sends nothing off the device.
 
 5. REGIONAL DIFFERENCES
 None.
 
 6. REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
-Not a medical device and no medical claims. The app states that it is not medical advice or treatment.
+Not a medical device, and no medical claims. The app states that it is not medical advice or treatment.
 All content was made for this app. The narration was generated with the open-source Qwen3-TTS model (Apache 2.0, which permits commercial use). "Music Box Lullaby" is a new recording of Brahms' Lullaby (1868), which is in the public domain.
 ```
 
